@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "91378723340",
+    "firebase_url": "https://student-imanagement-34cc9-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "student-imanagement-34cc9",
+    "storage_bucket": "student-imanagement-34cc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91378723340:android:c262cb7ca1af7b637b1c29",
+        "android_client_info": {
+          "package_name": "com.com.student_information_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW-i7iD1pGkdf1zA6BhqiAjx4hAeOtI3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91378723340:android:48d69c5a94af44af7b1c29",
+        "android_client_info": {
+          "package_name": "com.com.student_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW-i7iD1pGkdf1zA6BhqiAjx4hAeOtI3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91378723340:android:7e178110b66949a77b1c29",
+        "android_client_info": {
+          "package_name": "com.exapmle.studeninformationmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW-i7iD1pGkdf1zA6BhqiAjx4hAeOtI3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91378723340-mo1om9rh1dokogjm32dtn7g8op0gn8js.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

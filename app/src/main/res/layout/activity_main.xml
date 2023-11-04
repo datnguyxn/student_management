@@ -4,15 +4,214 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Base.Theme.Student_Management"
+    android:background="@drawable/background"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/student_management_system"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/waveform_unselected"
+            android:text="@string/for_manager"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_playlist_add_24"
+                android:text="@string/add_new_student_information"
+                android:textColor="#a8e5d0"
+                android:textSize="15sp"
+                android:gravity="start"
+                android:layout_marginEnd="10dp"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#a8e5d0"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_folder_copy_24"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#a8e5d0"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent"
+                android:textColor="#a8e5d0"
+                android:text="@string/student_information_list"
+                android:textSize="15sp"
+                android:gravity="start"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_yellow_playlist_add_24"
+                android:text="@string/new_certificate"
+                android:textColor="#F3E370"
+                android:textSize="15sp"
+                android:gravity="start"
+                android:layout_marginEnd="10dp"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#F3E370"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_yellow_folder_copy_24"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#F3E370"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent"
+                android:textColor="#F3E370"
+                android:text="@string/certificate_information_list"
+                android:textSize="15sp"
+                android:gravity="start"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_pink_playlist_add"
+                android:text="@string/import_student_information"
+                android:textColor="#E39FC1"
+                android:textSize="15sp"
+                android:gravity="start"
+                android:layout_marginEnd="10dp"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#E39FC1"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_pink_folder_copy"
+                android:textColor="#E39FC1"
+                android:text="@string/export_student_information"
+                android:textSize="15sp"
+                android:layout_height="105dp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#E39FC1"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent"
+                android:gravity="start"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_orange_playlist_add"
+                android:backgroundTint="@color/transparent"
+                app:cornerRadius="5dp"
+                android:text="@string/import_certificate_information"
+                android:textColor="#FFBC8B"
+                android:textSize="15sp"
+                android:gravity="start"
+                android:layout_marginEnd="10dp"
+                app:strokeColor="#FFBC8B"
+                app:strokeWidth="2dp"
+                android:layout_height="105dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/_10dp"
+                android:drawableLeft="@drawable/baseline_orange_folder_copy"
+                android:layout_height="105dp"
+                android:textColor="#FFBC8B"
+                android:text="@string/export_certificate_information"
+                android:textSize="15sp"
+                app:strokeColor="#FFBC8B"
+                app:strokeWidth="2dp"
+                android:backgroundTint="@color/transparent"
+                app:cornerRadius="5dp"
+                android:gravity="start"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

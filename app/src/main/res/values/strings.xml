@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">Student_Management</string>
+    <string name="app_name">StudentInformationManagement</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="login_your_account">Login Your Account</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="student_management_system">STUDENT MANAGEMENT SYSTEM</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">Name</string>
+    <string name="phone">phone</string>
+    <string name="manager">MANAGER</string>
+    <string name="employee">EMPLOYEE</string>
+    <string name="for_manager">For Manager</string>
+    <string name="add_new_student_information">New Student Information</string>
+    <string name="student_information_list">Student Information List</string>
+    <string name="new_certificate">New Certificate Information</string>
+    <string name="certificate_information_list">Certificate Information List</string>
+    <string name="import_student_information">Import Student Information</string>
+    <string name="export_student_information">Export Student Information</string>
+    <string name="import_certificate_information">Import Certificate Information</string>
+    <string name="export_certificate_information">Export Certificate Information</string>
 </resources>

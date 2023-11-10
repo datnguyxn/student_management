@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StudentInformationManagement</string>
+    <string name="app_name">Student Management</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -23,4 +23,19 @@
     <string name="export_student_information">Export Student Information</string>
     <string name="import_certificate_information">Import Certificate Information</string>
     <string name="export_certificate_information">Export Certificate Information</string>
+    <string name="your_name">Your name</string>
+    <string name="contact_email">contact@gmail.com</string>
+    <string name="new_student_information">NEW STUDENT INFORMATION</string>
+    <string name="first_name">First Name</string>
+    <string name="home">Home</string>
+    <string name="hi_admin">Welcome back, Admin!</string>
+    <string name="new_user_information">New User Information</string>
+    <string name="user_information_list">User Information List</string>
+    <string name="name_user">Nguyễn Văn A</string>
+    <string name="role">role</string>
+    <string name="status">Status</string>
+    <string name="update_information">Update Information</string>
+    <string name="delete_user">Delete User</string>
+    <string name="lock_user">Lock User</string>
+    <string name="view_history_login">View History Login</string>
 </resources>

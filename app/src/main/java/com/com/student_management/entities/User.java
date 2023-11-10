@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.com.student_management.constants.Roles;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +19,20 @@ public class User {
     private Roles role;
     private Uri avatar;
     private String status;
-    private ArrayList<Date> history;
+    private ArrayList<LocalDateTime> history;
+    public User() {
+    }
+
+    public User(String uuid, String name, Integer age, String email, Roles role, Uri avatar, String status, ArrayList<LocalDateTime> history) {
+        this.uuid = uuid;
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.role = role;
+        this.avatar = avatar;
+        this.status = status;
+        this.history = history;
+    }
 
     //getters and setters
     public String getUuid() {
@@ -70,8 +83,8 @@ public class User {
         this.email = email;
     }
 
-    public Roles getRole() {
-        return role;
+    public String getRole() {
+        return role.toString();
     }
 
     public void setRole(Roles role) {
@@ -94,16 +107,16 @@ public class User {
         this.status = status;
     }
 
-    public ArrayList<Date> getHistory() {
+    public ArrayList<LocalDateTime> getHistory() {
         return history;
     }
 
-    public void setHistory(ArrayList<Date> history) {
+    public void setHistory(ArrayList<LocalDateTime> history) {
         this.history = history;
     }
 
 
-    public User(String uuid, String name, Integer age, String phoneNumber, String password, String email, String role, String status, ArrayList<Date> history) {
+    public User(String uuid, String name, Integer age, String phoneNumber, String password, String email, String role, String status, ArrayList<LocalDateTime> history) {
         this.uuid = uuid;
         this.name = name;
         this.age = age;
@@ -124,7 +137,7 @@ public class User {
         this.password = (String) userMap.get("password");
         this.role = (Roles) userMap.get("role");
         this.status = (String) userMap.get("status");
-        this.history = (ArrayList<Date>) userMap.get("history");
+        this.history = (ArrayList<LocalDateTime>) userMap.get("history");
         this.avatar = Uri.parse((String) userMap.get("avatar"));
     }
 
@@ -165,7 +178,7 @@ public class User {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", avatar=" + avatar.toString() +
+//                ", avatar=" + avatar.toString() +
                 ", status='" + status + '\'' +
                 ", history=" + history +
                 ", role='" + role + '\'' +

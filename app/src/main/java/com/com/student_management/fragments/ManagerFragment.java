@@ -1,5 +1,6 @@
 package com.com.student_management.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -16,7 +17,9 @@ import com.com.student_management.R;
 import com.com.student_management.adapters.UserAdapter;
 import com.com.student_management.entities.User;
 import com.com.student_management.models.UserModel;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -40,6 +43,8 @@ public class ManagerFragment extends Fragment {
     private MaterialButton btnAddUser;
     private final UserModel userModel = new UserModel();
     private Context context = getContext();
+    private Dialog dialog;
+    private FirebaseAuth mAuth;
 
     public ManagerFragment() {
         // Required empty public constructor
@@ -78,13 +83,22 @@ public class ManagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manager, container, false);
         init(view);
+        BottomSheetDialogFragment bottomSheetDialogFragment = new AddUserBottomSheetFragment();
         setAllUser();
+        btnAddUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: add user");
+                bottomSheetDialogFragment.show(getChildFragmentManager(), bottomSheetDialogFragment.getTag());
+            }
+        });
         return view;
     }
 
     private void init(View view) {
         rvUser = view.findViewById(R.id.rvUser);
         btnAddUser = view.findViewById(R.id.btnAddUser);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void setAllUser() {
@@ -99,6 +113,5 @@ public class ManagerFragment extends Fragment {
             }
         });
     }
-
 
 }

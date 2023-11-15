@@ -2,33 +2,36 @@ package com.com.student_management.entities;
 
 import android.net.Uri;
 
-import com.com.student_management.constants.Roles;
+
+import com.com.student_management.utils.ArrayUtil;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class User {
     private String uuid;
     private String name;
-    private Integer age;
+    private Long age;
     private String password;
     private String phone;
     private String email;
-    private Roles role;
+    private String role;
     private Uri avatar;
     private String status;
-    private ArrayList<LocalDateTime> history;
+    private ArrayList<String> history;
+
     public User() {
     }
 
-    public User(String uuid, String name, Integer age, String email, Roles role, Uri avatar, String status, ArrayList<LocalDateTime> history) {
+    public User(String uuid, String name, Long age, String email, String role, Uri avatar, String status, ArrayList<String> history) {
         this.uuid = uuid;
         this.name = name;
         this.age = age;
         this.email = email;
-        this.role = role;
+        this.role = String.valueOf(role);
         this.avatar = avatar;
         this.status = status;
         this.history = history;
@@ -51,11 +54,11 @@ public class User {
         this.name = name;
     }
 
-    public Integer getAge() {
+    public Long getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(Long age) {
         this.age = age;
     }
 
@@ -87,16 +90,18 @@ public class User {
         return role.toString();
     }
 
-    public void setRole(Roles role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
-    public Uri getAvatar() {
-        return avatar;
+
+    public String getAvatar() {
+        return this.avatar.toString();
     }
 
-    public void setAvatar(Uri avatar) {
-        this.avatar = avatar;
+
+    public void setAvatar(String avatar) {
+        this.avatar = Uri.parse(avatar);
     }
 
     public String getStatus() {
@@ -107,23 +112,23 @@ public class User {
         this.status = status;
     }
 
-    public ArrayList<LocalDateTime> getHistory() {
+    public ArrayList<String> getHistory() {
         return history;
     }
 
-    public void setHistory(ArrayList<LocalDateTime> history) {
+    public void setHistory(ArrayList<String> history) {
         this.history = history;
     }
 
 
-    public User(String uuid, String name, Integer age, String phoneNumber, String password, String email, String role, String status, ArrayList<LocalDateTime> history) {
+    public User(String uuid, String name, Long age, String phoneNumber, String password, String email, String role, String status, ArrayList<String> history) {
         this.uuid = uuid;
         this.name = name;
         this.age = age;
         this.phone = phoneNumber;
         this.password = password;
         this.email = email;
-        this.role = Roles.valueOf(role);
+        this.role = String.valueOf(role);
         this.status = status;
         this.history = history;
     }
@@ -131,13 +136,13 @@ public class User {
     public User(HashMap<String, Object> userMap) {
         this.uuid = (String) userMap.get("uuid");
         this.name = (String) userMap.get("name");
-        this.age = (Integer) userMap.get("age");
+        this.age = (Long) userMap.get("age");
         this.phone = (String) userMap.get("phone");
         this.email = (String) userMap.get("email");
         this.password = (String) userMap.get("password");
-        this.role = (Roles) userMap.get("role");
+        this.role = (String) userMap.get("role");
         this.status = (String) userMap.get("status");
-        this.history = (ArrayList<LocalDateTime>) userMap.get("history");
+        this.history = ArrayUtil.convert((JSONArray) userMap.get("history"));
         this.avatar = Uri.parse((String) userMap.get("avatar"));
     }
 
@@ -178,7 +183,7 @@ public class User {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-//                ", avatar=" + avatar.toString() +
+                ", avatar=" + avatar +
                 ", status='" + status + '\'' +
                 ", history=" + history +
                 ", role='" + role + '\'' +

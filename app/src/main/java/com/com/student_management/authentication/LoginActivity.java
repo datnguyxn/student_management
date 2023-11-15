@@ -3,7 +3,6 @@ package com.com.student_management.authentication;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Application;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,14 +32,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthOptions;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -56,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
     private UserModel userModel;
     private String uuid = "";
     private String code;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private static final int RC_SIGN_IN = 123;
 
     @Override
@@ -71,9 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: login");
-                String uuid = UUID.randomUUID().toString();
-                Log.d(TAG, "onClick: uuid " + uuid);
-//                handleLogin();
+                handleLogin();
             }
         });
 
@@ -97,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-        dialog = new Dialog(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
         uuid = sharedPreferences.getString("uuid", "");
@@ -132,20 +122,14 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if (!TextUtils.isEmpty(uuid)) {
-            Log.e(TAG, "handleLogin: login with uuid " + uuid);
-            userModel.login(uuid, email, password, new UserModel.LoginCallBacks() {
+        if (TextUtils.isEmpty(uuid)) {
+            Log.e(TAG, "handleLogin: login without uuid " + uuid);
+            userModel.login(email, password, new UserModel.LoginCallBacks() {
                 @Override
                 public void onCompleted(User user) {
                     if (user != null) {
                         Log.e(TAG, "onCompleted: Login success " + user.getEmail());
-                        SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("uuid", user.getUuid());
-                        editor.apply();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        handleAuthEmailAndPasswordUseFirebase(email, password);
                     } else {
                         Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                     }
@@ -192,10 +176,8 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "handleAuthGoogleUseFirebase: login with google success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            ArrayList<LocalDateTime> history = new ArrayList<>();
-                            history.add(LocalDateTime.now());
                             Log.d(TAG, "handleAuthGoogleUseFirebase: " + user.getDisplayName());
-                            userModel.addUserByGoogle(user.getUid(), user.getDisplayName(), user.getEmail(), Roles.MANEGER, 20, user.getPhotoUrl(), "active", history);
+                            userModel.addUserByGoogle(user.getUid(), user.getDisplayName(), user.getEmail(), Roles.MANAGER, 20L, user.getPhotoUrl(), "active");
                             if (cbRemember.isChecked()) {
                                 SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -214,6 +196,28 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "handleAuthGoogleUseFirebase: login with google failed");
                     Toast.makeText(LoginActivity.this, "Login with google failed", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void handleAuthEmailAndPasswordUseFirebase(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener( task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Log.d(TAG, "onCompleted: login with firebase success");
+                        if (cbRemember.isChecked()) {
+                            SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("uuid", user.getUid());
+                            editor.apply();
+                        }
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Log.e(TAG, "onCompleted: login with firebase failed");
+                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 

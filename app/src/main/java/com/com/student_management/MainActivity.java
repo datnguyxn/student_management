@@ -16,14 +16,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.com.student_management.constants.App;
+import com.com.student_management.constants.Roles;
+import com.com.student_management.entities.User;
 import com.com.student_management.fragments.AccountFragment;
 import com.com.student_management.fragments.HomeFragment;
 import com.com.student_management.fragments.ManagerFragment;
 import com.com.student_management.fragments.NewStudentFragment;
+import com.com.student_management.models.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView tvRole;
     private BottomNavigationView bottomNavigationView;
+    private UserModel userModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +60,19 @@ public class MainActivity extends AppCompatActivity {
 //                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                         return true;
                     case App.BOTTOM_MANAGER:
-                        replaceFragment(new ManagerFragment());
-//                        Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
+                        userModel.getRole(mAuth.getCurrentUser().getUid(), new UserModel.UserCallBacks() {
+                            @Override
+                            public void onCallback(User user) {
+                                if (user.getRole().equals(Roles.ADMIN.toString())) {
+                                    replaceFragment(new ManagerFragment());
+                                } else {
+                                    Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                         return true;
                     case App.BOTTOM_ACCOUNT:
                         replaceFragment(new AccountFragment());
-//                        Toast.makeText(MainActivity.this, "About", Toast.LENGTH_SHORT).show();
                         return true;
                     default:
                         return false;
@@ -74,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         mAuth = FirebaseAuth.getInstance();
+        userModel = new UserModel();
     }
 
     private void replaceFragment(Fragment fragment) {

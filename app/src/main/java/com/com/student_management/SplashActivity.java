@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
 //                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
 //                startActivity(intent);
 //                finish();
-                SharedPreferences preferences = getSharedPreferences("onBoardingScreen", MODE_PRIVATE);
+                SharedPreferences preferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
                 boolean isFirstTime = preferences.getBoolean("firstTime", true);
                 SharedPreferences uuidPref = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
                 String uuid = uuidPref.getString(App.SHARED_PREFERENCES_UUID, null);

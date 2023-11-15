@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvStudentManagementSystem"
             android:layout_centerHorizontal="true"
-            android:text="@string/for_manager"
             android:textColor="@color/waveform_unselected" />
 
     </RelativeLayout>

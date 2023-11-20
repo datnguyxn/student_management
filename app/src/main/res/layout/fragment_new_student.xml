@@ -64,20 +64,170 @@
                 android:paddingHorizontal="@dimen/_8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtPhoneNumber"
+                    android:id="@+id/edtId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:background="@android:color/transparent"
-                    android:hint="@string/first_name"
-                    android:inputType="phone"
+                    android:hint="@string/student_id"
+                    android:inputType="number"
+                    android:digits="0123456789"
+                    android:maxLength="8"
                     android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="#A9B1C7"
+                    android:textColorHint="@color/light_coral"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_16dp"
+                android:background="@drawable/button_border_gray_flat"
+                android:paddingHorizontal="@dimen/_8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/first_name"
+                    android:inputType="text"
+                    android:textColor="@color/fifty_percent_black_overlay"
+                    android:textColorHint="@color/light_coral"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_16dp"
+                android:background="@drawable/button_border_gray_flat"
+                android:paddingHorizontal="@dimen/_8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/lastName"
+                    android:inputType="text"
+                    android:textColor="@color/fifty_percent_black_overlay"
+                    android:textColorHint="@color/light_coral"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_border_gray_flat"
+                android:paddingHorizontal="8dp">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/gender"
+                    android:inputType="text"
+                    android:textColor="@color/fifty_percent_black_overlay"
+                    android:textColorHint="@color/light_coral"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:enabled="false"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/checkBoxMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:text="Male" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Female" />
+                </LinearLayout>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_16dp"
+                android:background="@drawable/button_border_gray_flat"
+                android:paddingHorizontal="@dimen/_8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtLastPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/phone_number"
+                    android:inputType="phone"
+                    android:textColor="@color/fifty_percent_black_overlay"
+                    android:textColorHint="@color/light_coral"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_16dp"
+                android:background="@drawable/button_border_gray_flat"
+                android:paddingHorizontal="@dimen/_8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/address"
+                    android:inputType="phone"
+                    android:textColor="@color/fifty_percent_black_overlay"
+                    android:textColorHint="@color/light_coral"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

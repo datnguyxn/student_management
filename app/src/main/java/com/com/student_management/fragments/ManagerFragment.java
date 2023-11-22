@@ -48,7 +48,6 @@ public class ManagerFragment extends Fragment {
     private MaterialButton btnAddUser;
     private final UserModel userModel = new UserModel();
     private Context context = getContext();
-    private Dialog dialog;
     private UserAdapter userAdapter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override

@@ -1,17 +1,33 @@
 package com.com.student_management.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.com.student_management.BroadcastReceiver;
+import com.com.student_management.constants.App;
 import com.com.student_management.MainActivity;
 import com.com.student_management.R;
+import com.com.student_management.adapters.StudentAdapter;
+import com.com.student_management.entities.Student;
+import com.com.student_management.models.StudentModel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,23 +44,38 @@ public class ListStudentFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private StudentModel studentModel;
+    private static final String TAG = "ListStudentFragment";
+    private ImageView ivBack, ivSort, ivSearch;
+    private RecyclerView rvListStudent;
+    private StudentAdapter studentAdapter;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(TAG, "onReceive: " + action);
+            if (action != null) {
+                switch (action) {
+                    case App.ACTION_UPDATE_STUDENT:
+                        if (studentAdapter != null) {
+                            studentAdapter.clearData();
+                            getAllStudent();
+                        }
+                }
+            }
 
-    private ImageView imvBack;
-
+        }
+    };
+    private IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(App.ACTION_UPDATE_STUDENT);
+        return intentFilter;
+    }
 
     public ListStudentFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListStudentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ListStudentFragment newInstance(String param1, String param2) {
         ListStudentFragment fragment = new ListStudentFragment();
         Bundle args = new Bundle();
@@ -66,25 +97,58 @@ public class ListStudentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View listStudentView =  inflater.inflate(R.layout.fragment_list_student, container, false);
-        init(listStudentView);
-        imvBack.setOnClickListener(v -> {
-            onBackPressed();
+        View view =  inflater.inflate(R.layout.fragment_list_student, container, false);
+        init(view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvListStudent.setLayoutManager(layoutManager);
+        studentAdapter = new StudentAdapter(getContext());
+        rvListStudent.setAdapter(studentAdapter);
+        getAllStudent();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, getIntentFilter());
+        return view;
+    }
+
+    private void init(View view) {
+        ivBack = view.findViewById(R.id.iv_back);
+        ivSort = view.findViewById(R.id.iv_sort);
+        ivSearch = view.findViewById(R.id.iv_search);
+        rvListStudent = view.findViewById(R.id.rvListStudent);
+        studentModel = new StudentModel();
+        ivBack.setOnClickListener(v -> {
+            replaceFragment(new HomeFragment());
         });
-        // Inflate the layout for this fragment
-        return listStudentView;
-    }
-    private void init(View listStudentView) {
-        imvBack = listStudentView.findViewById(R.id.iv_back);
     }
 
-    public void onBackPressed() {
-        // Create an Intent to navigate back to the previous activity
-        Intent intent = new Intent(requireContext(), MainActivity.class);
-        startActivity(intent);
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
+    }
 
-        // Finish the current activity (fragment)
-        requireActivity().finish();
+    private void getAllStudent() {
+        studentModel.getAllStudents(new StudentModel.OnGetAllStudentsListener() {
+            @Override
+            public void onCompleted(ArrayList<Student> students) {
+                Log.d(TAG, "onCompleted: " + students.toString());
+                ArrayList<String> majors = new ArrayList<>();
+                for (Student student: students) {
+                    majors.add(student.getMajor());
+                    StringBuilder[] stringBuilder = new StringBuilder[majors.size()];
+                    for (int i = 0; i < majors.size(); i++) {
+                        String[] majorWords = majors.get(i).split("\\s+");
+                        stringBuilder[i] = new StringBuilder();
+
+                        for (String major : majorWords) {
+                           if (!major.isEmpty()) {
+                                 stringBuilder[i].append(major.charAt(0));
+                           }
+                        }
+                        student.setMajor(stringBuilder[i].toString().toUpperCase());
+                    }
+                }
+                studentAdapter.setStudents(students);
+            }
+        });
     }
 }

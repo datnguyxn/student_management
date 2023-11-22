@@ -98,6 +98,10 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "onCreate: btnAddNewStudent clicked");
             replaceFragment(new NewStudentFragment());
         });
+        btnStudentList.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnStudentList clicked");
+            replaceFragment(new ListStudentFragment());
+        });
 
         btnImportStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnImportStudent clicked");
@@ -138,7 +142,7 @@ public class HomeFragment extends Fragment {
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_home, fragment);
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
 

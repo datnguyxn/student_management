@@ -41,12 +41,10 @@
     <string name="age">Age</string>
     <string name="add_user">ADD USER</string>
     <string name="logout">LOGOUT</string>
-    <string name="change_password">CHANGE PASSWORD</string>
-    <!-- String for add new student -->
-    <string name="student_id">Student Id</string>
+    <string name="student_id">Student ID</string>
     <string name="lastName">Last Name</string>
     <string name="gender">Gender</string>
-    <string name="birthday">Birthday (dd/mm/yyyy)</string>
+    <string name="birthday">Birthday (mm/dd/yyyy)</string>
     <string name="address">Address</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="send">Send</string>
@@ -67,10 +65,18 @@
     <string name="lock_unlock">Toggle Status</string>
     <string name="history_login_of_user">HISTORY LOGIN OF USER</string>
     <string name="date">date</string>
-    <!-- String for add new Certificate -->
     <string name="certificate_id">Certificate Id</string>
     <string name="certificate_name">Certificate Name</string>
     <string name="certificate_description">Description</string>
     <string name="certificate_expiration">Expiration Date</string>
-
+    <string name="add_student">ADD STUDENT</string>
+    <string name="certificate">Certificate</string>
+    <string name="list_of_students">LIST OF STUDENTS</string>
+    <string name="major">Major</string>
+    <string name="id">ID</string>
+    <string name="delete_student">Delete Student</string>
+    <string name="update_student_information">UPDATE STUDENT INFORMATION</string>
+    <string name="id_certificate">ID Certificate</string>
+    <string name="date_created">Date Created</string>
+    <string name="expiration_date">Expiration Date</string>
 </resources>

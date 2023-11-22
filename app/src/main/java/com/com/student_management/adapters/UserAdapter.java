@@ -2,6 +2,7 @@ package com.com.student_management.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.com.student_management.BroadcastReceiver;
+
 import com.com.student_management.R;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.User;
@@ -38,7 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private AlertDialog alertDialog;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(android.content.Context context, android.content.Intent intent) {
+        public void onReceive(Context context, android.content.Intent intent) {
             String action = intent.getAction();
             if (action.equals(App.ACTION_DELETE_USER)) {
                 Log.d(TAG, "onReceive: " + App.ACTION_DELETE_USER);
@@ -114,13 +116,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                                 userModel.deleteUser(user.getUuid(), new UserModel.isDeletedCallBacks() {
                                                     @Override
                                                     public boolean onDeleted() {
-                                                        sendBroadcastToFragment(3);
+                                                        users.remove(position);
+                                                        notifyDataSetChanged();
                                                         return true;
                                                     }
                                                 });
                                             }
                                         })
-//set negative button
                                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -163,12 +165,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                                 }
                                             }
                                         })
-//set negative button
                                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 //set what should happen when negative button is clicked
                                                 Log.d(TAG, "onClick: cancel delete user");
+                                                alertDialog.dismiss();
                                             }
                                         })
                                         .show();
@@ -211,7 +213,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     private void sendBroadcastToFragment(int action) {
-        android.content.Intent intent = new android.content.Intent();
+        Intent intent = new Intent();
         if (action == 3) {
             intent.setAction(App.ACTION_DELETE_USER);
         } else if (action == 4) {

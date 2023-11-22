@@ -8,7 +8,6 @@
     <string name="remember_me">Remember me</string>
     <string name="login_with_google">Login with Google</string>
     <string name="student_management_system">STUDENT MANAGEMENT SYSTEM</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
@@ -49,5 +48,23 @@
     <string name="gender">Gender</string>
     <string name="birthday">Birthday (dd/mm/yyyy)</string>
     <string name="address">Address</string>
-
+    <string name="forgot_password">Forgot Password</string>
+    <string name="send">Send</string>
+    <string name="change_profile_picture">CHANGE PROFILE PICTURE</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="choose_your_picture">Choose your picture</string>
+    <string name="remove_current_avatar">Remove current avatar</string>
+    <string name="choose_from_library">Choose from library</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="change_your_password">CHANGE YOUR PASSWORD</string>
+    <string name="update_user_information">UPDATE USER INFORMATION</string>
+    <string name="active">Active</string>
+    <string name="update_user">UPDATE USER</string>
+    <string name="delete_user_information">DELETE USER INFORMATION</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="lock_unlock">Toggle Status</string>
+    <string name="history_login_of_user">HISTORY LOGIN OF USER</string>
+    <string name="date">date</string>
 </resources>

@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String CREATE_FRAGMENT_TAG = "CreateFragment";
     private DrawerLayout drawerLayout;
-    private FirebaseAuth mAuth;
     private TextView tvRole;
     private BottomNavigationView bottomNavigationView;
     private UserModel userModel;
+    private String uuid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +60,17 @@ public class MainActivity extends AppCompatActivity {
 //                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                         return true;
                     case App.BOTTOM_MANAGER:
-                        userModel.getRole(mAuth.getCurrentUser().getUid(), new UserModel.UserCallBacks() {
-                            @Override
-                            public void onCallback(User user) {
-                                if (user.getRole().equals(Roles.ADMIN.toString())) {
-                                    replaceFragment(new ManagerFragment());
-                                } else {
-                                    Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+//                        userModel.getRole(uuid, new UserModel.UserCallBacks() {
+//                            @Override
+//                            public void onCallback(User user) {
+//                                if (user.getRole().equals(Roles.ADMIN.toString())) {
+//                                    replaceFragment(new ManagerFragment());
+//                                } else {
+//                                    Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+                        replaceFragment(new ManagerFragment());
                         return true;
                     case App.BOTTOM_ACCOUNT:
                         replaceFragment(new AccountFragment());
@@ -85,8 +86,9 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         drawerLayout = findViewById(R.id.drawer_layout);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        mAuth = FirebaseAuth.getInstance();
         userModel = new UserModel();
+        SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
+        uuid = sharedPreferences.getString(App.SHARED_PREFERENCES_UUID, null);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -96,13 +98,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 }

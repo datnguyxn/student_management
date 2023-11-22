@@ -19,13 +19,13 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:padding="5dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@android:color/darker_gray"
-            app:shapeAppearanceOverlay="@style/circleImageView"
             android:src="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            app:strokeColor="@android:color/darker_gray"
+            app:strokeWidth="2dp" />
 
         <TextView
             android:id="@+id/tvName"
@@ -53,58 +53,39 @@
             app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
         <com.google.android.material.button.MaterialButton
+            android:layout_marginTop="@dimen/_10dp"
             android:id="@+id/btnChangeAvatar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="@color/transparent"
             android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:text="@string/change_password"
-            app:layout_constraintTop_toBottomOf="@+id/tvRole"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/btnChangePassword"
+            android:text="@string/change_profile_picture"
             android:textColor="#E39FC1"
             android:textSize="15sp"
             app:cornerRadius="5dp"
-            app:strokeColor="#E39FC1"
-            app:strokeWidth="2dp"
-            />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnChangePassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/transparent"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:text="@string/change_password"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/btnLogout"
-            android:textColor="#E39FC1"
-            android:textSize="15sp"
-            app:cornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvRole"
             app:strokeColor="#E39FC1"
-            app:strokeWidth="2dp"
-            />
+            app:strokeWidth="2dp"/>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/_10dp"
             android:backgroundTint="@color/transparent"
             android:gravity="center"
-            android:layout_marginBottom="70dp"
             android:text="@string/logout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnChangePassword"
             android:textColor="#E39FC1"
             android:textSize="15sp"
             app:cornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnChangeAvatar"
             app:strokeColor="#E39FC1"
             app:strokeWidth="2dp" />
 

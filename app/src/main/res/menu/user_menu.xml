@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/lock"
-        android:title="@string/lock_user" />
+        android:title="@string/lock_unlock" />
 
     <item
         android:id="@+id/history"

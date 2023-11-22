@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/new_user_information"
+        android:text="@string/update_user_information"
         android:textColor="@color/FlatWhite"
         android:textSize="20sp"
         android:gravity="center_horizontal"/>
@@ -79,29 +79,43 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etRole"
+        android:id="@+id/etActive"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/etPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/active"
+        android:textColorHint="@color/white"
+        android:textColor="@color/FlatWhite"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/etRole" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etRole"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/etActive"
         app:layout_constraintStart_toStartOf="parent"
         android:hint="@string/role"
         android:textColorHint="@color/white"
         android:textColor="@color/FlatWhite"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btnAddUser" />
+        app:layout_constraintBottom_toTopOf="@+id/btnUpdateUser" />
 
     <com.google.android.material.button.MaterialButton
         android:layout_marginTop="50dp"
-        android:id="@+id/btnAddUser"
+        android:id="@+id/btnUpdateUser"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:backgroundTint="@color/transparent"
         android:drawableLeft="@drawable/baseline_orange_playlist_add"
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/_10dp"
-        android:text="@string/add_user"
+        android:text="@string/update_user"
         android:textColor="#FFBC8B"
         android:textSize="15sp"
         app:cornerRadius="5dp"

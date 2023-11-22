@@ -2,9 +2,12 @@ package com.com.student_management.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.R;
 import com.com.student_management.adapters.UserAdapter;
+import com.com.student_management.constants.App;
 import com.com.student_management.entities.User;
 import com.com.student_management.models.UserModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -44,7 +49,35 @@ public class ManagerFragment extends Fragment {
     private final UserModel userModel = new UserModel();
     private Context context = getContext();
     private Dialog dialog;
-    private FirebaseAuth mAuth;
+    private UserAdapter userAdapter;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null) {
+                switch (action) {
+                    case App.ACTION_ADD_USER:
+                    case App.ACTION_UPDATE_USER:
+                    case App.ACTION_DELETE_USER:
+                    case App.ACTION_LOCK_USER:
+                        if (userAdapter != null) {
+                            userAdapter.clearData();
+                            setAllUser();
+                        }
+                        break;
+                }
+            }
+        }
+    };
+
+    private IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(App.ACTION_ADD_USER);
+        intentFilter.addAction(App.ACTION_UPDATE_USER);
+        intentFilter.addAction(App.ACTION_DELETE_USER);
+        intentFilter.addAction(App.ACTION_LOCK_USER);
+        return intentFilter;
+    }
 
     public ManagerFragment() {
         // Required empty public constructor
@@ -83,8 +116,13 @@ public class ManagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manager, container, false);
         init(view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvUser.setLayoutManager(layoutManager);
+        userAdapter = new UserAdapter(getContext());
+        rvUser.setAdapter(userAdapter);
         BottomSheetDialogFragment bottomSheetDialogFragment = new AddUserBottomSheetFragment();
         setAllUser();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, getIntentFilter());
         btnAddUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,20 +136,15 @@ public class ManagerFragment extends Fragment {
     private void init(View view) {
         rvUser = view.findViewById(R.id.rvUser);
         btnAddUser = view.findViewById(R.id.btnAddUser);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     private void setAllUser() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvUser.setLayoutManager(layoutManager);
         userModel.getAllUsers(new UserModel.OnUserRetrievedListener() {
             @Override
             public void onCompleted(ArrayList<User> users) {
                 Log.d(TAG, "onCompleted: " + users.toString());
-                UserAdapter userAdapter = new UserAdapter(getContext(), users);
-                rvUser.setAdapter(userAdapter);
+                userAdapter.setData(users);
             }
         });
     }
-
 }

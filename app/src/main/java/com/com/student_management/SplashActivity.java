@@ -11,16 +11,16 @@ import android.util.Log;
 
 import com.com.student_management.authentication.LoginActivity;
 import com.com.student_management.constants.App;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = "SplashActivity";
-    FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_acitvity);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseApp.initializeApp(this);
 
 //        run main activity after 3 seconds
         new Handler().postDelayed(new Runnable() {
@@ -42,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 } else {
 //                    check if user was signed in
-                    if (mAuth.getCurrentUser() != null && uuid != null) {
+                    if (uuid != null) {
                         Log.e(TAG, "run: uuid found " + uuid);
 //                        if (mAuth.getCurrentUser() == null) {
 //                            Log.e(TAG, "run: current user is null");

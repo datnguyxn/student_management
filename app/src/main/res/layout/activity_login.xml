@@ -49,7 +49,6 @@
         android:paddingVertical="@dimen/_16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -81,7 +80,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
                 android:hint="@string/email"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:textColor="@color/fifty_percent_black_overlay"
                 android:textColorHint="@color/fifty_percent_black_overlay"
                 tools:ignore="TouchTargetSizeCheck" />
@@ -126,21 +125,6 @@
             android:layout_height="@dimen/_50dp"
             android:backgroundTint="@color/yellow"
             android:text="@string/login"
-            android:textAlignment="center"
-            android:textColor="@color/FlatWhite"
-            android:textSize="@dimen/_16sp"
-            android:textStyle="bold"
-            app:cornerRadius="@dimen/_8dp" />
-
-        <Button
-            android:id="@+id/btnLoginWithGG"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/yellow"
-            android:drawableStart="@drawable/logo_google"
-            android:drawablePadding="@dimen/_10dp"
-            android:paddingHorizontal="@dimen/_10dp"
-            android:text="@string/login_with_google"
             android:textAlignment="center"
             android:textColor="@color/FlatWhite"
             android:textSize="@dimen/_16sp"

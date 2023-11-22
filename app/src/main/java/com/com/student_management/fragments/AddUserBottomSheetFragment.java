@@ -1,22 +1,26 @@
 package com.com.student_management.fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.R;
+import com.com.student_management.constants.App;
+import com.com.student_management.constants.Roles;
+import com.com.student_management.entities.User;
 import com.com.student_management.models.UserModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
@@ -31,6 +35,27 @@ public class AddUserBottomSheetFragment extends BottomSheetDialogFragment {
     private MaterialButton btnAddUser;
     private UserModel userModel = new UserModel();
     private FirebaseAuth mAuth;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(App.ACTION_ADD_USER)) {
+                Log.d(TAG, "onReceive: " + App.ACTION_ADD_USER);
+            }
+        }
+    };
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, new IntentFilter(App.ACTION_ADD_USER));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
 
     @Nullable
     @Override
@@ -38,11 +63,20 @@ public class AddUserBottomSheetFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_add_user_bottom_sheet, container, false);
         Log.d(TAG, "onCreateView: ManagerFragment");
         init(view);
+
         btnAddUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: create User");
                 createUser();
+                //close bottom sheet
+                dismiss();
+                //clear data
+                etName.setText("");
+                etEmail.setText("");
+                edAge.setText("");
+                etPhone.setText("");
+                etRole.setText("");
             }
         });
         return view;
@@ -100,19 +134,35 @@ public class AddUserBottomSheetFragment extends BottomSheetDialogFragment {
             etEmail.requestFocus();
             return;
         }
+        if (role.isEmpty()) {
+            etRole.setText(Roles.valueOf("MANAGER").toString());
+            return;
+        }
 
         userModel.isExistUser(email, new UserModel.CheckUserExistCallBacks() {
             @Override
             public void onExist() {
-                etEmail.setError("Email already exists");
-                etEmail.requestFocus();
+                Toast.makeText(context, "Email already exists", Toast.LENGTH_SHORT).show();
+                dismiss();
             }
 
             @Override
             public void onNotFound() {
-                userModel.create(email, name, phone, role, Long.parseLong(age));
+                userModel.create(email, name, phone, role, Long.parseLong(age), new UserModel.UserCallBacks() {
+                    @Override
+                    public void onCallback(User user) {
+                        sendBroadcastToFragment(1);
+                    }
+                });
             }
         });
 
+    }
+
+    private void sendBroadcastToFragment(int action) {
+        Intent intent = new Intent();
+        intent.setAction(App.ACTION_ADD_USER);
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

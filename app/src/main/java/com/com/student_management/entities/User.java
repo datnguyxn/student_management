@@ -36,6 +36,25 @@ public class User {
         this.status = status;
         this.history = history;
     }
+    public User(String name, Long age, String email, String password, String phone, String role, String status, ArrayList<String> history) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
+        this.status = status;
+        this.history = history;
+    }
+
+    public User(String name, String email, Long age, String phone, String role, String status) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+        this.status = status;
+    }
 
     //getters and setters
     public String getUuid() {
@@ -160,7 +179,7 @@ public class User {
             result.put("history", history);
             result.put("avatar", "");
         } else {
-            result.put("uuid", uuid);
+//            result.put("uuid", uuid);
             result.put("name", name);
             result.put("phone", phone);
             result.put("email", email);
@@ -171,6 +190,17 @@ public class User {
             result.put("history", history);
             result.put("avatar", avatar.toString());
         }
+        return result;
+    }
+
+    public Map<String, Object> updateUserToMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("phone", phone);
+        result.put("email", email);
+        result.put("role", role);
+        result.put("age", age);
+        result.put("status", status);
         return result;
     }
 

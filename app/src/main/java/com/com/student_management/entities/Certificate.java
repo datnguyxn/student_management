@@ -1,6 +1,5 @@
 package com.com.student_management.entities;
 
-import android.net.Uri;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,27 +8,24 @@ public class Certificate {
     private String id;
     private String name;
     private String description;
-    private Uri image;
-    private String date;
+    private String expirationDate;
     private String studentId;
 
     public Certificate() {
     }
 
-    public Certificate(String id, String name, String description, Uri image, String date, String studentId) {
+    public Certificate(String id, String name, String description, String expirationDate, String studentId) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.image = image;
-        this.date = date;
+        this.expirationDate = expirationDate;
         this.studentId = studentId;
     }
 
-    public Certificate(String name, String description, Uri image, String date, String studentId) {
+    public Certificate(String name, String description, String expirationDate, String studentId) {
         this.name = name;
         this.description = description;
-        this.image = image;
-        this.date = date;
+        this.expirationDate = expirationDate;
         this.studentId = studentId;
     }
 
@@ -47,12 +43,9 @@ public class Certificate {
         return description;
     }
 
-    public Uri getImage() {
-        return image;
-    }
 
-    public String getDate() {
-        return date;
+    public String getExpirationDate() {
+        return expirationDate;
     }
 
     public String getStudentId() {
@@ -71,12 +64,9 @@ public class Certificate {
         this.description = description;
     }
 
-    public void setImage(Uri image) {
-        this.image = image;
-    }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = Certificate.this.expirationDate;
     }
 
     public void setStudentId(String studentId) {
@@ -88,8 +78,7 @@ public class Certificate {
         result.put("id", id);
         result.put("name", name);
         result.put("description", description);
-        result.put("image", image);
-        result.put("date", date);
+        result.put("expirationDate", expirationDate);
         result.put("studentId", studentId);
         return result;
     }
@@ -100,8 +89,7 @@ public class Certificate {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", image=" + image +
-                ", date='" + date + '\'' +
+                ", expirationDate='" + expirationDate + '\'' +
                 ", studentId='" + studentId + '\'' +
                 '}';
     }

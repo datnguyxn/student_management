@@ -1,16 +1,16 @@
 package com.com.student_management.models;
 
-import android.net.Uri;
 import android.util.Log;
+
 
 import androidx.annotation.NonNull;
 
-import com.com.student_management.constants.Roles;
 import com.com.student_management.entities.User;
 import com.com.student_management.utils.FormatDateTime;
 import com.com.student_management.utils.HandlePassword;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,13 +18,21 @@ import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
+//import com.google.firebase.database.Query;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,30 +40,29 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserModel extends Model {
     private static final String TAG = "UserModel";
     private static final String USER_COLLECTION = "users";
-    private static final String COUNTRY_CODE = "+84";
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private String vetificationId = "";
 
     public interface UserCallBacks {
         void onCallback(User user);
     }
 
-    public interface onAddConfigListener {
+    public interface OnUserUpdatedListener {
         void onCompleted();
 
         void onFailure();
     }
 
-    public interface onGetConfigListener {
-        void onCompleted(List<Map<String, Object>> config);
+    public interface OnUserChangedListener {
+        void onCompleted(User user);
 
         void onFailure();
     }
+
     public interface OnUserRetrievedListener {
         void onCompleted(ArrayList<User> users);
     }
@@ -72,76 +79,69 @@ public class UserModel extends Model {
         void onNotFound();
     }
 
+    public interface isDeletedCallBacks {
+        boolean onDeleted();
+    }
+
+    public interface isLockedCallBacks {
+        boolean onLocked();
+    }
+
     public UserModel() {
         super();
     }
 
-    public UserModel(DatabaseReference database) {
-        super(database);
+
+    public UserModel(FirebaseFirestore firebaseFirestore) {
+        super(firebaseFirestore);
     }
 
     // login with email and password
     public void login(String email, String password, LoginCallBacks loginCallBacks) {
-        Log.e(TAG, "login: in login without uuid");
-        Query query = database.child(USER_COLLECTION);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = null;
-                boolean isFound = false;
-//                retrieve data from user collection
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    JSONObject userObject = new JSONObject((Map) dataSnapshot.getValue());
-                    HashMap<String, Object> userMap = new HashMap<>();
-                    Iterator<String> keys = userObject.keys();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        try {
-                            userMap.put(key, userObject.get(key));
-                            Log.d(TAG, "onDataChange: " + key.equals("history") + ": " + userObject.get(key).getClass().getName());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-//                    user = dataSnapshot.getValue(User.class);
-                    Log.e(TAG, "onDataChange: " + userMap.toString());
-                       user = new User(userMap);
-                    Log.e(TAG, "onDataChange: " + user.toString());
-                    if (user != null) {
-                        try {
-                            boolean isMatch = HandlePassword.verifyPassword(password, user.getPassword());
-                            Log.e(TAG, "onDataChange: password User: " + user.toString() + "; pass: " + user.getPassword() + "; is match: " + isMatch + "; map: " + user.toMap().toString());
-                            if (user.getEmail().equals(email) && isMatch) {
-//                                updateHistory(user.getUuid());
-                                loginCallBacks.onCompleted(user);
-                                isFound = true;
-                                break;
+        Log.d(TAG, "login: in login without uuid");
+        firebaseFirestore.collection(USER_COLLECTION).whereEqualTo("email", email)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
+                                User user = documentSnapshot.toObject(User.class);
+                                if (user != null) {
+                                    try {
+                                        boolean isMatch = HandlePassword.verifyPassword(password, user.getPassword());
+                                        if (isMatch) {
+                                            Log.e(TAG, "onDataChange: password User: " + user.toString() + "; pass: " + user.getPassword() + "; is match: " + isMatch + "; map: " + user.toMap().toString());
+                                            ArrayList<String> history = user.getHistory();
+                                            history.add(FormatDateTime.formatDateTime());
+                                            firebaseFirestore.collection(USER_COLLECTION).document(user.getUuid()).update("history", history);
+                                            if (user.getStatus().equals("active"))
+                                                loginCallBacks.onCompleted(user);
+                                            else
+                                                loginCallBacks.onFailure();
+                                        } else {
+                                            loginCallBacks.onFailure();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    loginCallBacks.onFailure();
+                                }
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            loginCallBacks.onFailure();
                         }
-
                     }
-                }
-                if (!isFound) {
-                    loginCallBacks.onFailure();
-                } else {
-                    Log.e(TAG, "onDataChange: user found: " + user.toString());
-                    loginCallBacks.onCompleted(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: " + error.toString());
-                loginCallBacks.onFailure();
-            }
-        });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loginCallBacks.onFailure();
+                    }
+                });
     }
 
-    public void create(String email, String name, String phone, String role, Long age) {
+    public void create(String email, String name, String phone, String role, Long age, UserCallBacks userCallBacks) {
         try {
             String password = email.split("@")[0];
             String hashedPassword = HandlePassword.hashPassword(password);
@@ -155,44 +155,86 @@ public class UserModel extends Model {
                             if (user != null) {
                                 Log.d(TAG, "authUserByFirebaseWithEmailAndPassword: " + user.getUid());
                                 User newUser = new User(user.getUid(), name, age, phone, hashedPassword, email, role, "active", history);
-                                Log.e(TAG, "create: " + newUser.toString());
-                                database.child(USER_COLLECTION).child(user.getUid()).setValue(newUser.toMap())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                firebaseFirestore.collection(USER_COLLECTION).document(user.getUid()).set(newUser.toMap())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Log.e(TAG, "create: success");
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "onSuccess: create user success");
+                                                Log.d(TAG, "create: " + newUser.toString());
+                                                userCallBacks.onCallback(newUser);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.e(TAG, "onFailure: write failed ");
+                                                Log.e(TAG, "create: " + e.toString());
+                                                userCallBacks.onCallback(null);
                                             }
                                         });
+
                             }
                         } else {
                             Log.e(TAG, "authUserByFirebaseWithEmailAndPassword: create user failed");
+                            userCallBacks.onCallback(null);
                         }
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "authUserByFirebaseWithEmailAndPassword: create user failed");
+                        userCallBacks.onCallback(null);
                     });
         } catch (Exception e) {
             Log.e(TAG, "create: " + e.toString());
+            userCallBacks.onCallback(null);
         }
     }
 
+    public void getAllUsers(final OnUserRetrievedListener listener) {
+        firebaseFirestore.collection(USER_COLLECTION).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    ArrayList<User> users = new ArrayList<>();
 
-    public void addUserByGoogle(String uuid, String name, String email, Roles role, Long age, Uri avatar, String status) {
-        ArrayList<String> history = new ArrayList<>();
-        history.add(FormatDateTime.formatDateTime());
-        User user = new User(uuid, name, age, email, role.name(), avatar, status, history);
-
-        database.child(USER_COLLECTION).child(uuid).setValue(user.toMap())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "onComplete: add user by google success");
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            User user = documentSnapshot.toObject(User.class);
+                            users.add(user);
+                        }
+                        listener.onCompleted(users);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onCompleted(null);
+                    }
+                });
+    }
+
+    public void isExistUser(String email, CheckUserExistCallBacks callbacks) {
+        Query query = firebaseFirestore.collection(USER_COLLECTION).whereEqualTo("email", email);
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    boolean isFound = false;
+
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        User user = null;
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            user = documentSnapshot.toObject(User.class);
+                            Log.e(TAG, "onSuccess: " + user.toString());
+                            if (user != null) {
+                                if (user.getEmail().equals(email)) {
+                                    callbacks.onExist();
+                                    isFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!isFound) {
+                            callbacks.onNotFound();
+                        } else {
+                            Log.e(TAG, "onDataChange: user found: " + user.toString());
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -203,102 +245,117 @@ public class UserModel extends Model {
                 });
     }
 
-    public void getAllUsers(final OnUserRetrievedListener listener) {
-        database.child(USER_COLLECTION).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<User> users = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    JSONObject jsonObject = new JSONObject((java.util.Map) dataSnapshot.getValue());
-                    User user = new User();
-                    String uuid = dataSnapshot.getKey();
-                    String name = jsonObject.optString("name");
-                    Roles role = Roles.valueOf(jsonObject.optString("role"));
-                    String status = jsonObject.optString("status");
-
-                    user.setUuid(uuid);
-                    user.setName(name);
-                    user.setRole(role.name());
-                    user.setStatus(status);
-
-                    users.add(user);
-
-                }
-                listener.onCompleted(users);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: user not exist in system");
-            }
-        });
-    }
-
-    public void isExistUser(String email, CheckUserExistCallBacks callbacks) {
-        Query query = database.child(USER_COLLECTION);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = null;
-                boolean isExist = false;
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-
-                    if (userMap.get("email").equals(email)) {
-                        isExist = true;
-                        break;
-                    }
-
-                }
-                callbacks.onNotFound();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: " + error.toString());
-                callbacks.onNotFound();
-            }
-        });
-
-    }
-
     public void getRole(String uuid, final UserCallBacks userCallBacks) {
-        Query query = database.child(USER_COLLECTION).child(uuid);
-        String role = "";
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-        String role = "";
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                if (user != null) {
-                    role = user.getRole();
-                }
-                userCallBacks.onCallback(user);
-            }
+        firebaseFirestore.collection(USER_COLLECTION).whereEqualTo("uuid", uuid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    String role = "";
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null) {
+                                role = user.getRole();
+                                userCallBacks.onCallback(user);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "onCancelled: " + e.toString());
+                    userCallBacks.onCallback(null);
+                });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: " + error.toString());
-                userCallBacks.onCallback(null);
-            }
-        });
     }
 
-    private void updateHistory(String uuid) {
-        database.child(USER_COLLECTION).child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = new User((HashMap<String, Object>) snapshot.getValue());
-                ArrayList<String> history = user.getHistory();
-                history.add(FormatDateTime.formatDateTime());
-                database.child(USER_COLLECTION).child(uuid).child("history").setValue(history);
-            }
+    public void getUser(String uuid, final UserCallBacks userCallBacks) {
+        firebaseFirestore.collection(USER_COLLECTION).whereEqualTo("uuid", uuid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null) {
+                                userCallBacks.onCallback(user);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "onCancelled: " + e.toString());
+                    userCallBacks.onCallback(null);
+                });
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "onCancelled: " + error.toString());
-            }
-        });
+    public void updateAvatar(String uuid, String toString) {
+        firebaseFirestore.collection(USER_COLLECTION).document(uuid).update("avatar", toString)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "onSuccess: update avatar success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG + "updateAvatar", e.toString());
+                    }
+                });
+    }
+
+    public void updateUser(String uuid, Map<String, Object> values, OnUserUpdatedListener
+            listener) {
+        Log.e(TAG, "updateUser: " + values.toString());
+        firebaseFirestore.collection(USER_COLLECTION).document(uuid).update(values)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "onSuccess: update user success");
+                        listener.onCompleted();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onFailure();
+                        Log.e(TAG + "updateUser", e.toString());
+                    }
+                });
+    }
+
+    public void deleteUser(String uuid, isDeletedCallBacks listener) {
+        Log.e(TAG, "deleteUser: " + uuid);
+        firebaseFirestore.collection(USER_COLLECTION).document(uuid).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "onSuccess: delete user success");
+                        listener.onDeleted();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG + "deleteUser", e.toString());
+                    }
+                });
+    }
+
+    public void setLockUser(String uuid, String status, isLockedCallBacks listener) {
+        Log.e(TAG, "setLockUser: " + uuid);
+        firebaseFirestore.collection(USER_COLLECTION).document(uuid).update("status", status)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "onSuccess: lock user success");
+                        listener.onLocked();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG + "setLockUser", e.toString());
+                    }
+                });
     }
 
 }

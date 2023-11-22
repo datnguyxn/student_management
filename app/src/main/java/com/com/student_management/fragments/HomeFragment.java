@@ -3,6 +3,7 @@ package com.com.student_management.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.com.student_management.R;
+import com.com.student_management.constants.App;
 import com.com.student_management.models.UserModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,8 +52,8 @@ public class HomeFragment extends Fragment {
     private MaterialButton btnAddNewStudent, btnStudentList, btnNewCertificate, btnCertificateList, btnImportStudent, btnExportStudent, btnImportCertificate, btnExportCertificate;
     private TextView tvRole;
     private Activity activity;
-    private FirebaseAuth mAuth;
     private UserModel userModel;
+    private String uuid;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -129,7 +131,8 @@ public class HomeFragment extends Fragment {
         btnImportCertificate = (MaterialButton) view.findViewById(R.id.btnImportCertificate);
         btnExportCertificate = (MaterialButton) view.findViewById(R.id.btnExportCertificate);
         userModel = new UserModel();
-        mAuth = FirebaseAuth.getInstance();
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        uuid = sharedPreferences.getString(App.SHARED_PREFERENCES_UUID, null);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -140,9 +143,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setRole() {
-        userModel.getRole(mAuth.getCurrentUser().getUid(), new UserModel.UserCallBacks() {
+        userModel.getRole(uuid, new UserModel.UserCallBacks() {
             @Override
             public void onCallback(User user) {
+                SharedPreferences sharedPreferences = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("role", user.getRole());
+                editor.apply();
+
                 tvRole.setText("For " + user.getRole());
             }
         });
@@ -178,13 +186,6 @@ public class HomeFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        Log.d(TAG, "onStart: " + currentUser.toString());
     }
 
 }

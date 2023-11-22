@@ -7,22 +7,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/name"/>
+            android:hint="@string/name" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"/>
+            android:hint="@string/email" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/phone"/>
+            android:hint="@string/phone" />
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -34,14 +35,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/colorPrimary"
-                android:text="@string/manager"/>
+                android:text="@string/manager" />
 
             <RadioButton
                 android:id="@+id/radioBtnEmployee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/colorPrimary"
-                android:text="@string/employee"/>
+                android:text="@string/employee" />
         </RadioGroup>
 
     </LinearLayout>

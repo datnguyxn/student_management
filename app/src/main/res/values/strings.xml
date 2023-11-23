@@ -70,8 +70,11 @@
     <string name="certificate_description">Description</string>
     <string name="certificate_expiration">Expiration Date</string>
     <string name="add_student">ADD STUDENT</string>
+    <string name="add_certificate">ADD CERTIFICATE</string>
     <string name="certificate">Certificate</string>
     <string name="list_of_students">LIST OF STUDENTS</string>
+    <string name="list_of_certificate">LIST OF CERTIFICATE</string>
+    <string name="new_certificate_information">NEW CERTIFICATE INFORMATION</string>
     <string name="major">Major</string>
     <string name="id">ID</string>
     <string name="delete_student">Delete Student</string>

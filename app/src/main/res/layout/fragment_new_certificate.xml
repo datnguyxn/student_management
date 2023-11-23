@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/new_certificate"
+                android:text="@string/new_certificate_information"
                 android:textColor="@color/FlatWhite"
                 android:textSize="20sp" />
 
@@ -186,15 +186,24 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddNewCertificate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_button"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:text="Add" />
-
+                android:layout_height="50dp"
+                android:backgroundTint="@color/transparent"
+                android:drawableLeft="@drawable/baseline_orange_playlist_add"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/_10dp"
+                android:text="@string/add_certificate"
+                android:textColor="#FFBC8B"
+                android:layout_marginTop="@dimen/_10dp"
+                android:textSize="15sp"
+                app:cornerRadius="5dp"
+                app:strokeColor="#FFBC8B"
+                app:strokeWidth="2dp"
+                app:layout_constraintTop_toBottomOf="@+id/etRole"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.com.student_management.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,7 @@ import com.com.student_management.adapters.UserAdapter;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.entities.Student;
+import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.CertificateModel;
 import com.com.student_management.models.StudentModel;
 import com.com.student_management.utils.FormatDateTime;
@@ -68,6 +70,7 @@ public class DetailAndUpdateStudentFragment extends Fragment {
     private CertificateModel certificateModel;
     private AlertDialog alertDialog;
     private boolean isCheck = true;
+    String role;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, android.content.Intent intent) {
@@ -116,6 +119,8 @@ public class DetailAndUpdateStudentFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_and_update_student, container, false);
         init(view);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        role = sharedPreferences.getString("role", null);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvCertificateOfStudent.setLayoutManager(layoutManager);
         certificateOfStudentAdapter = new CertificateOfStudentAdapter(getContext());
@@ -131,105 +136,106 @@ public class DetailAndUpdateStudentFragment extends Fragment {
             replaceFragment(new ListStudentFragment());
         });
         ivMore.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(), ivMore);
-            popupMenu.inflate(R.menu.student_detail_item);
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Log.d(TAG, "onMenuItemClick: " + menuItem.getItemId());
-                    switch (menuItem.getItemId()) {
-                        case App.UPDATE_STUDENT_INFO:
-                            setEnableEditText(true);
-                            edtDateCreated.setEnabled(false);
-                            edtIdStudent.setEnabled(false);
-                            edtEmailStudent.setEnabled(false);
-                            btnUpdateStudent.setVisibility(View.VISIBLE);
-                            btnCancel.setVisibility(View.VISIBLE);
-                            if (checkBoxMale.isChecked()) {
-                                isCheck = true;
-                            } else if (checkBoxFemale.isChecked()) {
-                                isCheck = false;
-                            }
-                            btnUpdateStudent.setOnClickListener(v -> {
-                                String name = edtNameStudent.getText().toString().trim();
-                                String email = edtEmailStudent.getText().toString().trim();
-                                String birthday = edtBirthday.getText().toString().trim();
-                                String phone = edtPhoneStudent.getText().toString().trim();
-                                String address = edtAddress.getText().toString().trim();
-                                String major = edtMajorStudent.getText().toString().trim();
-                                ArrayList<String> dateUpdated = new ArrayList<>();
-                                boolean isMale;
+            if (!RequireRole.checkRole(role, getContext())) {
+                PopupMenu popupMenu = new PopupMenu(getContext(), ivMore);
+                popupMenu.inflate(R.menu.student_detail_item);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        Log.d(TAG, "onMenuItemClick: " + menuItem.getItemId());
+                        switch (menuItem.getItemId()) {
+                            case App.UPDATE_STUDENT_INFO:
+                                setEnableEditText(true);
+                                edtDateCreated.setEnabled(false);
+                                edtIdStudent.setEnabled(false);
+                                edtEmailStudent.setEnabled(false);
+                                btnUpdateStudent.setVisibility(View.VISIBLE);
+                                btnCancel.setVisibility(View.VISIBLE);
                                 if (checkBoxMale.isChecked()) {
-                                    isMale = true;
-                                    checkBoxFemale.setChecked(false);
-                                } else {
-                                    isMale = false;
-                                    checkBoxMale.setChecked(false);
+                                    isCheck = true;
+                                } else if (checkBoxFemale.isChecked()) {
+                                    isCheck = false;
                                 }
-                                String dateUpdate = FormatDateTime.formatDateTime();
-                                dateUpdated.add(dateUpdate);
-                                Student updateStudent = new Student(name, email, isMale, birthday, phone, address, major, dateUpdated);
-                                Map<String, Object> studentMap = updateStudent.updateStudentToMap();
-                                studentModel.updateStudent(studentId, studentMap, new StudentModel.OnStudentUpdatedLintener() {
-                                    @Override
-                                    public void onCompleted() {
-                                        Log.d(TAG, "onCompleted: update student success");
-                                        setEnableEditText(false);
-                                        btnUpdateStudent.setVisibility(View.GONE);
-                                        btnCancel.setVisibility(View.GONE);
+                                btnUpdateStudent.setOnClickListener(v -> {
+                                    String name = edtNameStudent.getText().toString().trim();
+                                    String email = edtEmailStudent.getText().toString().trim();
+                                    String birthday = edtBirthday.getText().toString().trim();
+                                    String phone = edtPhoneStudent.getText().toString().trim();
+                                    String address = edtAddress.getText().toString().trim();
+                                    String major = edtMajorStudent.getText().toString().trim();
+                                    ArrayList<String> dateUpdated = new ArrayList<>();
+                                    boolean isMale;
+                                    if (checkBoxMale.isChecked()) {
+                                        isMale = true;
+                                        checkBoxFemale.setChecked(false);
+                                    } else {
+                                        isMale = false;
+                                        checkBoxMale.setChecked(false);
                                     }
+                                    String dateUpdate = FormatDateTime.formatDateTime();
+                                    dateUpdated.add(dateUpdate);
+                                    Student updateStudent = new Student(name, email, isMale, birthday, phone, address, major, dateUpdated);
+                                    Map<String, Object> studentMap = updateStudent.updateStudentToMap();
+                                    studentModel.updateStudent(studentId, studentMap, new StudentModel.OnStudentUpdatedLintener() {
+                                        @Override
+                                        public void onCompleted() {
+                                            Log.d(TAG, "onCompleted: update student success");
+                                            setEnableEditText(false);
+                                            btnUpdateStudent.setVisibility(View.GONE);
+                                            btnCancel.setVisibility(View.GONE);
+                                        }
 
-                                    @Override
-                                    public void onFailure() {
-                                        Log.e(TAG, "onFailure: update student failure");
-                                        Toast.makeText(getContext(), "Update student failure", Toast.LENGTH_SHORT).show();
-                                    }
+                                        @Override
+                                        public void onFailure() {
+                                            Log.e(TAG, "onFailure: update student failure");
+                                            Toast.makeText(getContext(), "Update student failure", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                 });
-
-                            });
-                            btnCancel.setOnClickListener(v -> {
-                                setEnableEditText(false);
-                                btnUpdateStudent.setVisibility(View.GONE);
-                                btnCancel.setVisibility(View.GONE);
-                            });
-                            return true;
-                        case App.DELETE_STUDENT_INFO:
-                            alertDialog = new AlertDialog.Builder(getContext())
-                                    .setTitle("Delete Student Information")
-                                    .setMessage("Are you sure you want to delete this student information?")
-                                    .setPositiveButton("Yes", (dialogInterface, i) -> {
-                                        studentModel.deleteStudent(studentId, new StudentModel.OnDeleteStudentListener() {
-                                            @Override
-                                            public void onCompleted(boolean isDelete) {
-                                                Log.d(TAG, "onCompleted: " + isDelete);
-                                                if (isDelete) {
-                                                    replaceFragment(new ListStudentFragment());
-                                                } else {
-                                                    Toast.makeText(getContext(), "Delete student failure", Toast.LENGTH_SHORT).show();
+                                btnCancel.setOnClickListener(v -> {
+                                    setEnableEditText(false);
+                                    btnUpdateStudent.setVisibility(View.GONE);
+                                    btnCancel.setVisibility(View.GONE);
+                                });
+                                return true;
+                            case App.DELETE_STUDENT_INFO:
+                                alertDialog = new AlertDialog.Builder(getContext())
+                                        .setTitle("Delete Student Information")
+                                        .setMessage("Are you sure you want to delete this student information?")
+                                        .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                            studentModel.deleteStudent(studentId, new StudentModel.OnDeleteStudentListener() {
+                                                @Override
+                                                public void onCompleted(boolean isDelete) {
+                                                    Log.d(TAG, "onCompleted: " + isDelete);
+                                                    if (isDelete) {
+                                                        replaceFragment(new ListStudentFragment());
+                                                    } else {
+                                                        Toast.makeText(getContext(), "Delete student failure", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    })
-                                    .setNegativeButton("No", (dialogInterface, i) -> {
-                                        Log.d(TAG, "onClick: cancel delete user");
-                                        alertDialog.dismiss();
-                                    })
-                                    .show();
-                            return true;
-                        case App.UPDATE_STUDENT_CERTIFICATE:
-                            AddCertificateOfStudentBottomSheetFragment addCertificateOfStudentBottomSheetFragment = new AddCertificateOfStudentBottomSheetFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("studentId", studentId);
-                            addCertificateOfStudentBottomSheetFragment.setArguments(bundle);
-                            addCertificateOfStudentBottomSheetFragment.show(getActivity().getSupportFragmentManager(), addCertificateOfStudentBottomSheetFragment.getTag());
-                            return true;
-                        default:
-                            return false;
+                                            });
+                                        })
+                                        .setNegativeButton("No", (dialogInterface, i) -> {
+                                            Log.d(TAG, "onClick: cancel delete user");
+                                            alertDialog.dismiss();
+                                        })
+                                        .show();
+                                return true;
+                            case App.UPDATE_STUDENT_CERTIFICATE:
+                                AddCertificateOfStudentBottomSheetFragment addCertificateOfStudentBottomSheetFragment = new AddCertificateOfStudentBottomSheetFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("studentId", studentId);
+                                addCertificateOfStudentBottomSheetFragment.setArguments(bundle);
+                                addCertificateOfStudentBottomSheetFragment.show(getActivity().getSupportFragmentManager(), addCertificateOfStudentBottomSheetFragment.getTag());
+                                return true;
+                            default:
+                                return false;
+                        }
                     }
-                }
-            });
-            popupMenu.show();
-
+                });
+                popupMenu.show();
+            }
         });
         return view;
     }

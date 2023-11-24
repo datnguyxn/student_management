@@ -120,6 +120,10 @@ public class LoginActivity extends AppCompatActivity {
                 public void onCompleted(User user) {
                     if (user != null) {
                         Log.e(TAG, "onCompleted: Login success " + user.getEmail());
+                        SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("role", user.getRole());
+                        editor.apply();
                         handleAuthEmailUseFirebase(email, password);
                     } else {
                         Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();

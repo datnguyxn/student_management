@@ -2,6 +2,7 @@ package com.com.student_management.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.com.student_management.R;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Student;
 import com.com.student_management.fragments.DetailAndUpdateStudentFragment;
+import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.StudentModel;
 import com.com.student_management.utils.HandID;
 
@@ -33,6 +35,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     private StudentModel studentModel = new StudentModel();
     private Bundle bundle = new Bundle();
     private AlertDialog alertDialog;
+    private String role;
 
     public StudentAdapter(Context context, ArrayList<Student> students) {
         this.context = context;
@@ -42,6 +45,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     public StudentAdapter(Context context) {
         this.context = context;
         this.students = new ArrayList<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        role = sharedPreferences.getString("role", "");
     }
 
     public void setStudents(ArrayList<Student> students) {
@@ -88,36 +93,38 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
                 PopupMenu popupMenu = new PopupMenu(context, holder.menu);
                 popupMenu.inflate(R.menu.student_menu);
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        Log.d("menu", "onMenuItemClick: " + menuItem.getItemId());
-                        if (menuItem.getItemId() == App.DELETE_STUDENT) {
-                            alertDialog = new AlertDialog.Builder(context)
-                                    .setTitle("Delete Student Information")
-                                    .setMessage("Are you sure you want to delete this student information?")
-                                    .setPositiveButton("Yes", (dialogInterface, i) -> {
-                                        studentModel.deleteStudent(student.getId(), new StudentModel.OnDeleteStudentListener() {
-                                            @Override
-                                            public void onCompleted(boolean isDelete) {
-                                                Log.d(TAG, "onCompleted: " + isDelete);
-                                                if (isDelete) {
-                                                    students.remove(position);
-                                                    notifyDataSetChanged();
+                if (!RequireRole.checkRole(role, context)) {
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            Log.d("menu", "onMenuItemClick: " + menuItem.getItemId());
+                            if (menuItem.getItemId() == App.DELETE_STUDENT) {
+                                alertDialog = new AlertDialog.Builder(context)
+                                        .setTitle("Delete Student Information")
+                                        .setMessage("Are you sure you want to delete this student information?")
+                                        .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                            studentModel.deleteStudent(student.getId(), new StudentModel.OnDeleteStudentListener() {
+                                                @Override
+                                                public void onCompleted(boolean isDelete) {
+                                                    Log.d(TAG, "onCompleted: " + isDelete);
+                                                    if (isDelete) {
+                                                        students.remove(position);
+                                                        notifyDataSetChanged();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    })
-                                    .setNegativeButton("No", (dialogInterface, i) -> {
-                                        Log.d(TAG, "onClick: cancel delete user");
-                                        alertDialog.dismiss();
-                                    })
-                                    .show();
+                                            });
+                                        })
+                                        .setNegativeButton("No", (dialogInterface, i) -> {
+                                            Log.d(TAG, "onClick: cancel delete user");
+                                            alertDialog.dismiss();
+                                        })
+                                        .show();
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+                    });
+                    popupMenu.show();
+                }
             }
         });
     }

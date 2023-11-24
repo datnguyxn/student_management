@@ -2,6 +2,7 @@ package com.com.student_management.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.com.student_management.R;
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.fragments.UpdateCertificateBottomSheetFragment;
+import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.CertificateModel;
 import com.com.student_management.models.StudentModel;
 
@@ -38,10 +40,13 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
     private AlertDialog alertDialog;
     private CertificateModel certificateModel = new CertificateModel();
     private StudentModel studentModel = new StudentModel();
+    private String role;
 
     public CertificateAdapter(Context context) {
         this.context = context;
         this.certificates = new ArrayList<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        role = sharedPreferences.getString("role", "");
     }
 
     public CertificateAdapter(Context context, ArrayList<Certificate> certificates) {
@@ -80,56 +85,58 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.menuCertificate);
                 popupMenu.inflate(R.menu.certificate_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        Log.d(TAG, "onMenuItemClick: " + menuItem.getItemId());
-                        switch (menuItem.getItemId()) {
-                            case App.UPDATE_CERTIFICATE:
-                                bundle.putString("idCertificate", certificate.getId());
-                                UpdateCertificateBottomSheetFragment updateCertificateBottomSheetFragment = new UpdateCertificateBottomSheetFragment();
-                                updateCertificateBottomSheetFragment.setArguments(bundle);
-                                updateCertificateBottomSheetFragment.show(((FragmentActivity) context).getSupportFragmentManager(), updateCertificateBottomSheetFragment.getTag());
-                                return true;
-                            case App.DELETE_CERTIFICATE:
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Delete Certificate");
-                                builder.setMessage("Do you want to delete this certificate?");
-                                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-                                    certificateModel.deleteCertificate(certificate.getId(), new CertificateModel.OnDeleteCertificateListener() {
-                                        @Override
-                                        public void onDeleteCertificateSuccess() {
-                                            certificates.remove(certificate);
-                                            notifyDataSetChanged();
-                                            studentModel.deleteCertificateOfStudents(certificate.getId(), new StudentModel.OnUpdateCertificateListener() {
-                                                @Override
-                                                public void onCompleted() {
-                                                    Log.d(TAG, "onCompleted: ");
-                                                }
+                if (!RequireRole.checkRole(role, context)) {
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            Log.d(TAG, "onMenuItemClick: " + menuItem.getItemId());
+                            switch (menuItem.getItemId()) {
+                                case App.UPDATE_CERTIFICATE:
+                                    bundle.putString("idCertificate", certificate.getId());
+                                    UpdateCertificateBottomSheetFragment updateCertificateBottomSheetFragment = new UpdateCertificateBottomSheetFragment();
+                                    updateCertificateBottomSheetFragment.setArguments(bundle);
+                                    updateCertificateBottomSheetFragment.show(((FragmentActivity) context).getSupportFragmentManager(), updateCertificateBottomSheetFragment.getTag());
+                                    return true;
+                                case App.DELETE_CERTIFICATE:
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("Delete Certificate");
+                                    builder.setMessage("Do you want to delete this certificate?");
+                                    builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                                        certificateModel.deleteCertificate(certificate.getId(), new CertificateModel.OnDeleteCertificateListener() {
+                                            @Override
+                                            public void onDeleteCertificateSuccess() {
+                                                certificates.remove(certificate);
+                                                notifyDataSetChanged();
+                                                studentModel.deleteCertificateOfStudents(certificate.getId(), new StudentModel.OnUpdateCertificateListener() {
+                                                    @Override
+                                                    public void onCompleted() {
+                                                        Log.d(TAG, "onCompleted: ");
+                                                    }
 
-                                                @Override
-                                                public void onFailure() {
-                                                    Log.d(TAG, "onFailure: ");
-                                                }
-                                            });
-                                        }
+                                                    @Override
+                                                    public void onFailure() {
+                                                        Log.d(TAG, "onFailure: ");
+                                                    }
+                                                });
+                                            }
 
-                                        @Override
-                                        public void onDeleteCertificateFailure() {
-                                            Log.d(TAG, "onDeleteCertificateFailure: ");
-                                        }
+                                            @Override
+                                            public void onDeleteCertificateFailure() {
+                                                Log.d(TAG, "onDeleteCertificateFailure: ");
+                                            }
+                                        });
                                     });
-                                });
-                                builder.setNegativeButton("No", (dialogInterface, i) -> {
-                                            dialogInterface.dismiss();
-                                        })
-                                        .show();
-                            default:
-                                return false;
+                                    builder.setNegativeButton("No", (dialogInterface, i) -> {
+                                                dialogInterface.dismiss();
+                                            })
+                                            .show();
+                                default:
+                                    return false;
+                            }
                         }
-                    }
-                });
-                popupMenu.show();
+                    });
+                    popupMenu.show();
+                }
             }
         });
     }

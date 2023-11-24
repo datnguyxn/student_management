@@ -2,6 +2,7 @@ package com.com.student_management.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.com.student_management.R;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.entities.Student;
+import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.CertificateModel;
 import com.com.student_management.models.StudentModel;
 
@@ -32,6 +34,7 @@ public class CertificateOfStudentAdapter extends RecyclerView.Adapter<Certificat
     private Bundle bundle = new Bundle();
     private AlertDialog alertDialog;
     private String studentId, certificateId;
+    private String role;
 
     public CertificateOfStudentAdapter(Context context, ArrayList<Certificate> certificates) {
         this.context = context;
@@ -41,6 +44,8 @@ public class CertificateOfStudentAdapter extends RecyclerView.Adapter<Certificat
     public CertificateOfStudentAdapter(Context context) {
         this.context = context;
         this.certificates = new ArrayList<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        role = sharedPreferences.getString("role", "");
     }
 
     public void setData(ArrayList<Certificate> certificates) {
@@ -70,38 +75,40 @@ public class CertificateOfStudentAdapter extends RecyclerView.Adapter<Certificat
             public void onClick(View view) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.menu_certificate_of_student);
                 popupMenu.inflate(R.menu.certificate_of_student_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        Log.d("TAG", "onMenuItemClick: " + menuItem.getItemId());
-                        if (menuItem.getItemId() == App.DELETE_CERTIFICATE_OF_STUDENT) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setMessage("Do you want to delete this certificate?");
-                            builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-                                studentModel.deleteCertificateOfStudent(studentId, id, new StudentModel.OnUpdateCertificateListener() {
-                                    @Override
-                                    public void onCompleted() {
-                                        certificates.remove(certificate);
-                                        notifyDataSetChanged();
-                                    }
+                if (!RequireRole.checkRole(role, context)) {
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            Log.d("TAG", "onMenuItemClick: " + menuItem.getItemId());
+                            if (menuItem.getItemId() == App.DELETE_CERTIFICATE_OF_STUDENT) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setMessage("Do you want to delete this certificate?");
+                                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                                    studentModel.deleteCertificateOfStudent(studentId, id, new StudentModel.OnUpdateCertificateListener() {
+                                        @Override
+                                        public void onCompleted() {
+                                            certificates.remove(certificate);
+                                            notifyDataSetChanged();
+                                        }
 
-                                    @Override
-                                    public void onFailure() {
-                                        Log.e("TAG", "onFailure: ");
-                                    }
+                                        @Override
+                                        public void onFailure() {
+                                            Log.e("TAG", "onFailure: ");
+                                        }
+                                    });
                                 });
-                            });
-                            builder.setNegativeButton("No", (dialogInterface, i) -> {
-                                dialogInterface.dismiss();
-                            });
-                            alertDialog = builder.create();
-                            alertDialog.show();
-                            return true;
+                                builder.setNegativeButton("No", (dialogInterface, i) -> {
+                                    dialogInterface.dismiss();
+                                });
+                                alertDialog = builder.create();
+                                alertDialog.show();
+                                return true;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+                    });
+                    popupMenu.show();
+                }
             }
         });
     }

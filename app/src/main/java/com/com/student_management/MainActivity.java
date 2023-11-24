@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private UserModel userModel;
     private String uuid;
+    private String role;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +61,11 @@ public class MainActivity extends AppCompatActivity {
 //                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                         return true;
                     case App.BOTTOM_MANAGER:
-                        userModel.getRole(uuid, new UserModel.UserCallBacks() {
-                            @Override
-                            public void onCallback(User user) {
-                                if (user.getRole().equals(Roles.ADMIN.toString())) {
-                                    replaceFragment(new ManagerFragment());
-                                } else {
-                                    Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                        if (role.equals(Roles.ADMIN.name())) {
+                            replaceFragment(new ManagerFragment());
+                        } else {
+                            Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                     case App.BOTTOM_ACCOUNT:
                         replaceFragment(new AccountFragment());
@@ -87,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         userModel = new UserModel();
         SharedPreferences sharedPreferences = getSharedPreferences(App.SHARED_PREFERENCES_USER, MODE_PRIVATE);
         uuid = sharedPreferences.getString(App.SHARED_PREFERENCES_UUID, null);
+        role = sharedPreferences.getString("role", "");
     }
 
     private void replaceFragment(Fragment fragment) {

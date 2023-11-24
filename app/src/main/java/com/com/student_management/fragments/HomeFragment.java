@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.com.student_management.R;
 import com.com.student_management.constants.App;
+import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.UserModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +60,7 @@ public class HomeFragment extends Fragment {
     private ScrollView scrollView;
     private ConstraintLayout constraintLayout;
     private String uuid;
+    private String role;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -97,13 +100,16 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         init(view);
-        setRole();
         scrollView = new ScrollView(this.getContext());
         constraintLayout = new ConstraintLayout(this.getContext());
         scrollView.addView(constraintLayout);
         btnAddNewStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnAddNewStudent clicked");
-            replaceFragment(new NewStudentFragment());
+            if (RequireRole.checkRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                replaceFragment(new NewStudentFragment());
+            }
         });
         btnStudentList.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnStudentList clicked");
@@ -115,14 +121,22 @@ public class HomeFragment extends Fragment {
         });
         btnNewCertificate.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnNewCertificate clicked");
-            replaceFragment(new NewCertificateFragment());
+            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                replaceFragment(new NewCertificateFragment());
+            }
         });
 
         btnImportStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnImportStudent clicked");
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("text/csv");
-            startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
+            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("text/csv");
+                startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
+            }
         });
         return view;
     }
@@ -152,6 +166,9 @@ public class HomeFragment extends Fragment {
         userModel = new UserModel();
         SharedPreferences sharedPreferences = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
         uuid = sharedPreferences.getString(App.SHARED_PREFERENCES_UUID, null);
+        SharedPreferences sharedPreferences1 = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        role = sharedPreferences1.getString("role", null);
+        tvRole.setText("For " + role);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -159,20 +176,6 @@ public class HomeFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
-    }
-
-    private void setRole() {
-        userModel.getRole(uuid, new UserModel.UserCallBacks() {
-            @Override
-            public void onCallback(User user) {
-                SharedPreferences sharedPreferences = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("role", user.getRole());
-                editor.apply();
-
-                tvRole.setText("For " + user.getRole());
-            }
-        });
     }
 
     @Override

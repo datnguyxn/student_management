@@ -22,7 +22,6 @@ public class Student {
     private String address;
     private String dateCreated;
     private ArrayList<String> dateUpdated;
-    private String expirationDate;
     private ArrayList<String> idCertificate;
 
     public Student() {
@@ -56,6 +55,17 @@ public class Student {
         this.fullName = name;
         this.email = email;
         this.gender = isMale;
+        this.birthday = birthday;
+        this.phone = phone;
+        this.address = address;
+        this.major = major;
+        this.dateUpdated = dateUpdated;
+    }
+
+    public Student(String name, String email, boolean isCheck, String birthday, String phone, String address, String major, ArrayList<String> dateUpdated) {
+        this.fullName = name;
+        this.email = email;
+        this.gender = isCheck;
         this.birthday = birthday;
         this.phone = phone;
         this.address = address;
@@ -155,9 +165,8 @@ public class Student {
         result.put("idCertificate", idCertificate);
         return result;
     }
-    public Map<String, Object> updateUserToMap() {
+    public Map<String, Object> updateStudentToMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("id", id);
         result.put("fullName", fullName);
         result.put("email", email);
         result.put("gender", gender);

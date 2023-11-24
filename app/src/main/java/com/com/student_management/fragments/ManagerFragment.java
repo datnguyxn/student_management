@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.R;
@@ -46,6 +48,8 @@ public class ManagerFragment extends Fragment {
     private static final String TAG = "ManagerFragment";
     private RecyclerView rvUser;
     private MaterialButton btnAddUser;
+    private ScrollView scrollView;
+    private ConstraintLayout constraintLayout;
     private final UserModel userModel = new UserModel();
     private Context context = getContext();
     private UserAdapter userAdapter;
@@ -115,6 +119,9 @@ public class ManagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manager, container, false);
         init(view);
+        scrollView = new ScrollView(this.getContext());
+        constraintLayout = new ConstraintLayout(this.getContext());
+        scrollView.addView(constraintLayout);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvUser.setLayoutManager(layoutManager);
         userAdapter = new UserAdapter(getContext());

@@ -15,6 +15,9 @@ public class App {
     public static final int UPDATE_STUDENT = 2131296865;
     public static final int DELETE_STUDENT = 2131296862;
     public static final int CERTIFICATE = 2131296881;
+    public static final int UPDATE_STUDENT_INFO = 2131296891;
+    public static final int DELETE_STUDENT_INFO = 2131296884;
+    public static final int UPDATE_STUDENT_CERTIFICATE = 2131296907;
     public static final String ACTION_ADD_USER = "add_user";
     public static final String ACTION_UPDATE_USER = "update_user";
     public static final String ACTION_DELETE_USER = "delete_user";
@@ -22,5 +25,10 @@ public class App {
     public static final String ACTION_UPDATE_STUDENT = "update_student";
     public static final String ACTION_DELETE_STUDENT = "delete_student";
     public static final String ACTION_ADD_ID_CERTIFICATE = "add_id_certificate";
-
+    public static final String ACTION_ADD_CERTIFICATE_FOR_STUDENT = "add_certificate_for_student";
+    public static final int DELETE_CERTIFICATE_OF_STUDENT = 2131296892;
+    public static final int UPDATE_CERTIFICATE = 2131296899;
+    public static final int DELETE_CERTIFICATE = 2131296862;
+    public static final String ACTION_UPDATE_CERTIFICATE = "update_certificate";
+    public static final String ALGORITHM = "AES";
 }

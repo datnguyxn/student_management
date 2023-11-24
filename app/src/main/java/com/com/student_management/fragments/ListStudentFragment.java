@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.constants.App;
@@ -25,9 +27,12 @@ import com.com.student_management.R;
 import com.com.student_management.adapters.StudentAdapter;
 import com.com.student_management.entities.Student;
 import com.com.student_management.models.StudentModel;
+import com.com.student_management.utils.HandID;
+import com.com.student_management.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +52,8 @@ public class ListStudentFragment extends Fragment {
     private StudentModel studentModel;
     private static final String TAG = "ListStudentFragment";
     private ImageView ivBack, ivSort, ivSearch;
+    private ScrollView scrollView;
+    private ConstraintLayout constraintLayout;
     private RecyclerView rvListStudent;
     private StudentAdapter studentAdapter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -66,6 +73,7 @@ public class ListStudentFragment extends Fragment {
 
         }
     };
+
     private IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(App.ACTION_UPDATE_STUDENT);
@@ -97,7 +105,11 @@ public class ListStudentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_list_student, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_student, container, false);
+        scrollView = new ScrollView(getContext());
+        constraintLayout = new ConstraintLayout(getContext());
+        scrollView.addView(constraintLayout);
+
         init(view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvListStudent.setLayoutManager(layoutManager);
@@ -130,24 +142,32 @@ public class ListStudentFragment extends Fragment {
         studentModel.getAllStudents(new StudentModel.OnGetAllStudentsListener() {
             @Override
             public void onCompleted(ArrayList<Student> students) {
-                Log.d(TAG, "onCompleted: " + students.toString());
-                ArrayList<String> majors = new ArrayList<>();
-                for (Student student: students) {
-                    majors.add(student.getMajor());
-                    StringBuilder[] stringBuilder = new StringBuilder[majors.size()];
-                    for (int i = 0; i < majors.size(); i++) {
-                        String[] majorWords = majors.get(i).split("\\s+");
-                        stringBuilder[i] = new StringBuilder();
-
-                        for (String major : majorWords) {
-                           if (!major.isEmpty()) {
-                                 stringBuilder[i].append(major.charAt(0));
-                           }
+                try {
+                    Log.d(TAG, "onCompleted: " + students.toString());
+                    ArrayList<String> majors = new ArrayList<>();
+                    for (Student student : students) {
+                        student.setId(HandID.decrypt(student.getId()));
+                        majors.add(student.getMajor());
+//                    StringBuilder[] stringBuilder = new StringBuilder[majors.size()];
+//                    for (int i = 0; i < majors.size(); i++) {
+//                        String[] majorWords = majors.get(i).split("\\s+");
+//                        stringBuilder[i] = new StringBuilder();
+//
+//                        for (String major : majorWords) {
+//                           if (!major.isEmpty()) {
+//                                 stringBuilder[i].append(major.charAt(0));
+//                           }
+//                        }
+//                        student.setMajor(stringBuilder[i].toString().toUpperCase());
+                        for (int i = 0; i < majors.size(); i++) {
+                            student.setMajor(StringUtil.convertString(majors)[i].toString().toUpperCase());
                         }
-                        student.setMajor(stringBuilder[i].toString().toUpperCase());
                     }
+//                }
+                    studentAdapter.setStudents(students);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                studentAdapter.setStudents(students);
             }
         });
     }

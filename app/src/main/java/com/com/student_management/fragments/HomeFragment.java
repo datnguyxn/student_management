@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.com.student_management.R;
@@ -53,6 +55,8 @@ public class HomeFragment extends Fragment {
     private TextView tvRole;
     private Activity activity;
     private UserModel userModel;
+    private ScrollView scrollView;
+    private ConstraintLayout constraintLayout;
     private String uuid;
 
     public HomeFragment() {
@@ -94,6 +98,9 @@ public class HomeFragment extends Fragment {
 
         init(view);
         setRole();
+        scrollView = new ScrollView(this.getContext());
+        constraintLayout = new ConstraintLayout(this.getContext());
+        scrollView.addView(constraintLayout);
         btnAddNewStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnAddNewStudent clicked");
             replaceFragment(new NewStudentFragment());
@@ -101,6 +108,14 @@ public class HomeFragment extends Fragment {
         btnStudentList.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnStudentList clicked");
             replaceFragment(new ListStudentFragment());
+        });
+        btnCertificateList.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnCertificateList clicked");
+            replaceFragment(new ListCertificateFragment());
+        });
+        btnNewCertificate.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnNewCertificate clicked");
+            replaceFragment(new NewCertificateFragment());
         });
 
         btnImportStudent.setOnClickListener(v -> {

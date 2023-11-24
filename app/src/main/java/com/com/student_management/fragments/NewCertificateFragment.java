@@ -5,14 +5,24 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.com.student_management.MainActivity;
 import com.com.student_management.R;
+import com.com.student_management.entities.Certificate;
+import com.com.student_management.models.CertificateModel;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,20 +40,16 @@ public class NewCertificateFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private ImageView imvBack;
+    private TextInputEditText edtCertificateName, edtCertificateDescription;
+    private MaterialButton btnAddCertificate;
+    private static final String TAG = "NewCertificateFragment";
+    private CertificateModel certificateModel;
 
     public NewCertificateFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NewStudentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static NewCertificateFragment newInstance(String param1, String param2) {
         NewCertificateFragment fragment = new NewCertificateFragment();
         Bundle args = new Bundle();
@@ -68,23 +74,59 @@ public class NewCertificateFragment extends Fragment {
         View newCertificateView = inflater.inflate(R.layout.fragment_new_certificate, container, false);
         init(newCertificateView);
         imvBack.setOnClickListener(v -> {
-            onBackPressed();
+            replaceFragment(new HomeFragment());
         });
-        // Inflate the layout for this fragment
+        btnAddCertificate.setOnClickListener(v -> {
+            createNewCertificate();
+        });
         return newCertificateView;
     }
 
     private void init(View newCertificateView) {
         imvBack = newCertificateView.findViewById(R.id.iv_back);
+        edtCertificateName = newCertificateView.findViewById(R.id.edtCertificateName);
+        edtCertificateDescription = newCertificateView.findViewById(R.id.edtDescription);
+        btnAddCertificate = newCertificateView.findViewById(R.id.btnAddNewCertificate);
+        certificateModel = new CertificateModel();
     }
 
-    public void onBackPressed() {
-        // Create an Intent to navigate back to the previous activity
-        Intent intent = new Intent(requireContext(), MainActivity.class);
-        startActivity(intent);
-
-        // Finish the current activity (fragment)
-        requireActivity().finish();
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
     }
 
+    private void createNewCertificate() {
+        String certificateName = edtCertificateName.getText().toString().trim().toUpperCase();
+        String certificateDescription = edtCertificateDescription.getText().toString().trim();
+        if (certificateName.isEmpty() || certificateDescription.isEmpty()) {
+            return;
+        }
+
+
+        certificateModel.isCertificateExists(certificateName, new CertificateModel.CertificateCallback() {
+            @Override
+            public void onCallback(Certificate certificate) {
+                if (certificate != null) {
+                    Toast.makeText(getContext(), "Certificate is already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                certificateModel.create(certificateName, certificateDescription, new CertificateModel.OnCreateCertificateListener() {
+                    @Override
+                    public void onCreateCertificateSuccess(Certificate certificate) {
+                        Log.d(TAG, "onCreateCertificateSuccess: " + certificate.toString());
+                        Toast.makeText(getContext(), "Create certificate successfully", Toast.LENGTH_SHORT).show();
+                        replaceFragment(new ListCertificateFragment());
+                    }
+
+                    @Override
+                    public void onCreateCertificateFailure() {
+                        Log.e(TAG, "onCreateCertificateFailure: ");
+                        Toast.makeText(getContext(), "Create certificate failure", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
 }

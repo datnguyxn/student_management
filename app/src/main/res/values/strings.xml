@@ -44,7 +44,7 @@
     <string name="student_id">Student ID</string>
     <string name="lastName">Last Name</string>
     <string name="gender">Gender</string>
-    <string name="birthday">Birthday (mm/dd/yyyy)</string>
+    <string name="birthday">Birthday</string>
     <string name="address">Address</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="send">Send</string>
@@ -65,10 +65,9 @@
     <string name="lock_unlock">Toggle Status</string>
     <string name="history_login_of_user">HISTORY LOGIN OF USER</string>
     <string name="date">date</string>
-    <string name="certificate_id">Certificate Id</string>
+    <string name="certificate_id">Certificate ID</string>
     <string name="certificate_name">Certificate Name</string>
-    <string name="certificate_description">Description</string>
-    <string name="certificate_expiration">Expiration Date</string>
+    <string name="certificate_description">Certificate Description</string>
     <string name="add_student">ADD STUDENT</string>
     <string name="add_certificate">ADD CERTIFICATE</string>
     <string name="certificate">Certificate</string>
@@ -82,4 +81,13 @@
     <string name="id_certificate">ID Certificate</string>
     <string name="date_created">Date Created</string>
     <string name="expiration_date">Expiration Date</string>
+    <string name="update_certificate">Update Certificate</string>
+    <string name="delete_certificate">Delete Certificate</string>
+    <string name="student_information">STUDENT INFORMATION</string>
+    <string name="new_cancel">CANCEL</string>
+    <string name="new_certificate_of_student">NEW CERTIFICATE OF STUDENT</string>
+    <string name="add_certificate_of_student">ADD</string>
+    <string name="user_id">User ID</string>
+    <string name="update_certificate_information">UPDATE CERTIFICATE INFORMATION</string>
+    <string name="update_certificate_new">UPDATE CERTIFICATE</string>
 </resources>

@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/menu_student"
+        app:layout_constraintEnd_toStartOf="@+id/menu_certificate"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tvId"
+            android:id="@+id/tvIdCertificate"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/id"
@@ -26,7 +26,7 @@
             android:gravity="start"/>
 
         <TextView
-            android:id="@+id/tvNameStudent"
+            android:id="@+id/tvCertificateName"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:gravity="start"
@@ -34,21 +34,12 @@
             android:textColor="@color/FlatWhite"
             android:textSize="@dimen/_20sp" />
 
-        <TextView
-            android:id="@+id/tvMajor"
-            android:layout_width="70dp"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_height="wrap_content"
-            android:text="@string/major"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/FlatWhite"
-            android:textSize="@dimen/_20sp"/>
     </LinearLayout>
 
     <ImageView
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/menu_student"
+        android:id="@+id/menu_certificate"
         android:layout_width="30dp"
         android:layout_height="30dp"
         app:layout_constraintStart_toEndOf="@+id/ll_item_student"

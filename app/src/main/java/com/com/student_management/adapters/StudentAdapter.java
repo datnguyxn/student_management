@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.com.student_management.R;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Student;
-import com.com.student_management.fragments.UpdateStudentBottomSheetFragment;
+import com.com.student_management.fragments.DetailAndUpdateStudentFragment;
 import com.com.student_management.models.StudentModel;
-import com.com.student_management.fragments.ViewAndUpdateCertificateOfStudentFragment;
+import com.com.student_management.utils.HandID;
 
 import java.util.ArrayList;
 
@@ -56,13 +56,13 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     @NonNull
     @Override
-    public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StudentAdapter.StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_student, parent, false);
         return new StudentAdapter.StudentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StudentAdapter.StudentViewHolder holder, int position) {
         Student student = students.get(position);
         holder.tvId.setText(student.getId());
         holder.tvNameStudent.setText(student.getFullName());
@@ -70,7 +70,15 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         holder.itemStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bundle.putString("id", student.getId());
+                try {
+                    bundle.putString("studentId", HandID.encrypt(student.getId()));
+                    DetailAndUpdateStudentFragment detailAndUpdateStudentFragment = new DetailAndUpdateStudentFragment();
+                    detailAndUpdateStudentFragment.setArguments(bundle);
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, detailAndUpdateStudentFragment).addToBackStack(null).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -84,43 +92,29 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         Log.d("menu", "onMenuItemClick: " + menuItem.getItemId());
-                        switch (menuItem.getItemId()) {
-                            case App.UPDATE_STUDENT:
-                                bundle.putString("id", student.getId());
-                                UpdateStudentBottomSheetFragment updateStudentBottomSheetFragment = new UpdateStudentBottomSheetFragment();
-                                updateStudentBottomSheetFragment.setArguments(bundle);
-                                updateStudentBottomSheetFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), updateStudentBottomSheetFragment.getTag());
-                                return true;
-                            case App.DELETE_STUDENT:
-                                alertDialog = new AlertDialog.Builder(context)
-                                        .setTitle("Delete Student Information")
-                                        .setMessage("Are you sure you want to delete this student information?")
-                                        .setPositiveButton("Yes", (dialogInterface, i) -> {
-                                            studentModel.deleteStudent(student.getId(), new StudentModel.OnDeleteStudentListener() {
-                                                @Override
-                                                public void onCompleted(boolean isDelete) {
-                                                    Log.d(TAG, "onCompleted: " + isDelete);
-                                                    if (isDelete) {
-                                                        students.remove(position);
-                                                        notifyDataSetChanged();
-                                                    }
+                        if (menuItem.getItemId() == App.DELETE_STUDENT) {
+                            alertDialog = new AlertDialog.Builder(context)
+                                    .setTitle("Delete Student Information")
+                                    .setMessage("Are you sure you want to delete this student information?")
+                                    .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                        studentModel.deleteStudent(student.getId(), new StudentModel.OnDeleteStudentListener() {
+                                            @Override
+                                            public void onCompleted(boolean isDelete) {
+                                                Log.d(TAG, "onCompleted: " + isDelete);
+                                                if (isDelete) {
+                                                    students.remove(position);
+                                                    notifyDataSetChanged();
                                                 }
-                                            });
-                                        })
-                                        .setNegativeButton("No", (dialogInterface, i) -> {
-                                            Log.d(TAG, "onClick: cancel delete user");
-                                            alertDialog.dismiss();
-                                        })
-                                        .show();
-                            case App.CERTIFICATE:
-                                bundle.putString("id", student.getId());
-                                ViewAndUpdateCertificateOfStudentFragment viewAndUpdateCertificateOfStudentFragment = new ViewAndUpdateCertificateOfStudentFragment();
-                                viewAndUpdateCertificateOfStudentFragment.setArguments(bundle);
-                                AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                                activity.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, viewAndUpdateCertificateOfStudentFragment).addToBackStack(null).commit();
-                            default:
-                                return false;
+                                            }
+                                        });
+                                    })
+                                    .setNegativeButton("No", (dialogInterface, i) -> {
+                                        Log.d(TAG, "onClick: cancel delete user");
+                                        alertDialog.dismiss();
+                                    })
+                                    .show();
                         }
+                        return false;
                     }
                 });
                 popupMenu.show();

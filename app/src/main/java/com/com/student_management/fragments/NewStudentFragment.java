@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.com.student_management.MainActivity;
 import com.com.student_management.R;
+import com.com.student_management.entities.Certificate;
 import com.com.student_management.entities.Student;
+import com.com.student_management.models.CertificateModel;
 import com.com.student_management.models.StudentModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,11 +41,13 @@ public class NewStudentFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private ImageView imvBack;
-    private TextInputEditText edtId, edtFullName, edtBirthday, edtPhoneNumber, edtAddAddress, edtMajor, edtCertificate;
+    private TextInputEditText edtFullName, edtBirthday, edtPhoneNumber, edtAddAddress, edtMajor, edtCertificate;
     private MaterialButton btnAddStudent;
     private CheckBox checkBoxMale, checkBoxFemale;
     private static final String TAG = "NewStudentFragment";
+    private CertificateModel certificateModel;
     private StudentModel studentModel;
+    private String  fullName, birthday, phoneNumber, address, major, certificateId;
 
     public NewStudentFragment() {
         // Required empty public constructor
@@ -96,7 +100,6 @@ public class NewStudentFragment extends Fragment {
 
     private void init(View newStudentView) {
         imvBack = newStudentView.findViewById(R.id.iv_back);
-        edtId = newStudentView.findViewById(R.id.edtId);
         edtFullName = newStudentView.findViewById(R.id.edtFullName);
         edtBirthday = newStudentView.findViewById(R.id.edtBirthday);
         edtPhoneNumber = newStudentView.findViewById(R.id.edtPhoneNumber);
@@ -107,6 +110,7 @@ public class NewStudentFragment extends Fragment {
         checkBoxMale = newStudentView.findViewById(R.id.checkBoxMale);
         checkBoxFemale = newStudentView.findViewById(R.id.checkBoxFemale);
         studentModel = new StudentModel();
+        certificateModel = new CertificateModel();
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -117,53 +121,54 @@ public class NewStudentFragment extends Fragment {
     }
 
     private void addNewStudent() {
-        String id = edtId.getText().toString().trim();
-        String fullName = edtFullName.getText().toString().trim();
-        String birthday = edtBirthday.getText().toString().trim();
-        String phoneNumber = edtPhoneNumber.getText().toString().trim();
-        String address = edtAddAddress.getText().toString().trim();
-        String major = edtMajor.getText().toString().trim();
-        String certificate = edtCertificate.getText().toString().trim();
+        fullName = edtFullName.getText().toString().trim();
+        birthday = edtBirthday.getText().toString().trim();
+        phoneNumber = edtPhoneNumber.getText().toString().trim();
+        address = edtAddAddress.getText().toString().trim();
+        major = edtMajor.getText().toString().trim();
+        certificateId = edtCertificate.getText().toString().trim().toUpperCase();
         // true is male, false is female
         boolean isGender = false;
         if (checkBoxMale.isChecked()) {
             isGender = true;
         }
-        if (id.isEmpty() || fullName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty()) {
+        if (fullName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty()) {
             Log.d(TAG, "addNewStudent: empty");
             Toast.makeText(getActivity(), "Please fill field is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
         boolean finalIsGender = isGender;
-        studentModel.isExistStudent(id, new StudentModel.CheckStudentExistCallbacks() {
+
+        certificateModel.isExistCertificate(certificateId, new CertificateModel.IsExistCertificateListener() {
             @Override
-            public void onExist(Student student) {
-                Log.d(TAG, "onExist: " + student.toString());
-                Toast.makeText(getActivity(), "Student is exist", Toast.LENGTH_SHORT).show();
+            public void onExist(Certificate certificate) {
+                Log.d(TAG, "onExist: " + certificate.toString());
+                createStudent(certificate.getId(), finalIsGender);
             }
 
             @Override
             public void onNotExist() {
-                Log.d(TAG, "onNotExist: ");
-                Log.d(TAG, "onNotExist: " + certificate);
-                studentModel.create(id, fullName, finalIsGender, phoneNumber, birthday, address, major, certificate, new StudentModel.OnCreateStudentListener() {
-
-                    @Override
-                    public void onComplete(Student student) {
-                        Log.d(TAG, "onComplete: " + student.toString());
-                        Toast.makeText(getActivity(), "Add new student success", Toast.LENGTH_SHORT).show();
-                        replaceFragment(new HomeFragment());
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.d(TAG, "onFailure: ");
-                        Toast.makeText(getActivity(), "Add new student failure", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                createStudent("", finalIsGender);
             }
         });
+    }
 
+    private void createStudent(String certificate, boolean finalIsGender) {
+        studentModel.create(fullName, finalIsGender, phoneNumber, birthday, address, major, certificate, new StudentModel.OnCreateStudentListener() {
+
+            @Override
+            public void onComplete(Student student) {
+                Log.d(TAG, "onComplete: " + student.toString());
+                Toast.makeText(getActivity(), "Add new student success", Toast.LENGTH_SHORT).show();
+                replaceFragment(new ListStudentFragment());
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d(TAG, "onFailure: ");
+                Toast.makeText(getActivity(), "Add new student failure", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

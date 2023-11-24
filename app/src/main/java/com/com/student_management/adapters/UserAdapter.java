@@ -113,7 +113,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 //set what would happen when positive button is clicked
                                                 Log.d(TAG, "onClick: delete user");
-                                                userModel.deleteUser(user.getUuid(), new UserModel.isDeletedCallBacks() {
+                                                userModel.deleteUser(user.getUuid(), new UserModel.IsDeletedCallBacks() {
                                                     @Override
                                                     public boolean onDeleted() {
                                                         users.remove(position);
@@ -145,7 +145,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                                 //set what would happen when positive button is clicked
                                                 Log.d(TAG, "onClick: Lock user");
                                                 if (user.getStatus().equals("active")) {
-                                                    userModel.setLockUser(user.getUuid(), "locked", new UserModel.isLockedCallBacks() {
+                                                    userModel.setLockUser(user.getUuid(), "locked", new UserModel.IsLockedCallBacks() {
                                                                 @Override
                                                                 public boolean onLocked() {
                                                                     sendBroadcastToFragment(4);
@@ -154,7 +154,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                                             }
                                                     );
                                                 } else if (user.getStatus().equals("locked")) {
-                                                    userModel.setLockUser(user.getUuid(), "active", new UserModel.isLockedCallBacks() {
+                                                    userModel.setLockUser(user.getUuid(), "active", new UserModel.IsLockedCallBacks() {
                                                                 @Override
                                                                 public boolean onLocked() {
                                                                     sendBroadcastToFragment(4);

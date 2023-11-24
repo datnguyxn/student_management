@@ -79,11 +79,11 @@ public class UserModel extends Model {
         void onNotFound();
     }
 
-    public interface isDeletedCallBacks {
+    public interface IsDeletedCallBacks {
         boolean onDeleted();
     }
 
-    public interface isLockedCallBacks {
+    public interface IsLockedCallBacks {
         boolean onLocked();
     }
 
@@ -322,7 +322,7 @@ public class UserModel extends Model {
                 });
     }
 
-    public void deleteUser(String uuid, isDeletedCallBacks listener) {
+    public void deleteUser(String uuid, IsDeletedCallBacks listener) {
         Log.e(TAG, "deleteUser: " + uuid);
         firebaseFirestore.collection(USER_COLLECTION).document(uuid).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -340,7 +340,7 @@ public class UserModel extends Model {
                 });
     }
 
-    public void setLockUser(String uuid, String status, isLockedCallBacks listener) {
+    public void setLockUser(String uuid, String status, IsLockedCallBacks listener) {
         Log.e(TAG, "setLockUser: " + uuid);
         firebaseFirestore.collection(USER_COLLECTION).document(uuid).update("status", status)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

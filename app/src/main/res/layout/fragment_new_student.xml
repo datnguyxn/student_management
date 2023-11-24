@@ -32,7 +32,7 @@
                     android:src="@drawable/baseline_arrow_back_ios_24" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_20dp"
@@ -62,30 +62,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_1">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/_16dp"
-                android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp"
-                app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/student_id"
-                    android:inputType="text"
-                    android:maxLength="8"
-                    android:textColor="@color/FlatWhite"
-                    android:textColorHint="@color/FlatWhite"
-                    android:textSize="14sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

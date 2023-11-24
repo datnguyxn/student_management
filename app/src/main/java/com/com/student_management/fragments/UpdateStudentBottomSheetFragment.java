@@ -98,7 +98,7 @@ public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment 
             String dateUpdate = FormatDateTime.formatDateTime();
             dateUpdated.add(dateUpdate);
             student = new Student(studentId, name, birthday, email, phone, major, address, isMale, dateUpdated);
-            students.putAll(student.updateUserToMap());
+//            students.putAll(student.upd());
             studentModel.updateStudent(id, students, new StudentModel.OnStudentUpdatedLintener() {
                 @Override
                 public void onCompleted() {

@@ -10,4 +10,8 @@
         android:id="@+id/delete_student_detail"
         android:title="@string/delete_student" />
 
+    <item
+        android:id="@+id/add_new_certificate"
+        android:title="@string/certificate" />
+
 </menu>

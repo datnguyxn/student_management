@@ -33,7 +33,7 @@ import java.util.Map;
 public class UpdateUserBottomSheetFragment extends BottomSheetDialogFragment {
     private static final String TAG = "UpdateUserBottomSheetFragment";
     private Context context;
-    private TextInputEditText etName, etEmail, edAge, etPhone, etRole, etActive;
+    private TextInputEditText etIdUser, etName, etEmail, edAge, etPhone, etRole, etActive;
     private MaterialButton btnUpdateUser;
     private UserModel userModel;
     private String uuid;
@@ -120,6 +120,7 @@ public class UpdateUserBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     private void init(View view) {
+        etIdUser = view.findViewById(R.id.edtIdUser);
         etName = view.findViewById(R.id.etName);
         etEmail = view.findViewById(R.id.etEmail);
         edAge = view.findViewById(R.id.etAge);
@@ -134,6 +135,7 @@ public class UpdateUserBottomSheetFragment extends BottomSheetDialogFragment {
         userModel.getUser(uuid, new UserModel.UserCallBacks() {
             @Override
             public void onCallback(User user) {
+                etIdUser.setText(user.getUuid());
                 etName.setText(user.getName());
                 etEmail.setText(user.getEmail());
                 edAge.setText(String.valueOf(user.getAge()));

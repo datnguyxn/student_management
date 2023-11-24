@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ll_1"
@@ -64,33 +64,8 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/_16dp"
                 android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtCertificateId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@android:color/transparent"
-                    android:digits="0123456789"
-                    android:hint="@string/certificate_id"
-                    android:inputType="number"
-                    android:maxLength="8"
-                    android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="@color/light_coral"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/_16dp"
-                android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp">
+                android:paddingHorizontal="@dimen/_8dp"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtCertificateName"
@@ -100,10 +75,9 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/certificate_name"
                     android:inputType="text"
-                    android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="@color/light_coral"
+                    android:textColor="@color/FlatWhite"
+                    android:textColorHint="@color/FlatWhite"
                     android:textSize="14sp"
-                    android:textStyle="bold"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -115,7 +89,8 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/_16dp"
                 android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp">
+                android:paddingHorizontal="@dimen/_8dp"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtDescription"
@@ -125,66 +100,13 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/certificate_description"
                     android:inputType="text"
-                    android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="@color/light_coral"
+                    android:textColor="@color/FlatWhite"
+                    android:textColorHint="@color/FlatWhite"
                     android:textSize="14sp"
-                    android:textStyle="bold"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/_16dp"
-                android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtExpirationDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/certificate_expiration"
-                    android:inputType="text"
-                    android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="@color/light_coral"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/_16dp"
-                android:background="@drawable/button_border_gray_flat"
-                android:paddingHorizontal="@dimen/_8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtCertificateOfStudent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@android:color/transparent"
-                    android:digits="0123456789"
-                    android:hint="@string/certificate_id"
-                    android:inputType="number"
-                    android:maxLength="8"
-                    android:textColor="@color/fifty_percent_black_overlay"
-                    android:textColorHint="@color/light_coral"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddNewCertificate"
@@ -209,4 +131,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</FrameLayout>
+</ScrollView>

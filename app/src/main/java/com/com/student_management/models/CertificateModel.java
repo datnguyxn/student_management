@@ -2,17 +2,20 @@ package com.com.student_management.models;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.utils.FormatDateTime;
-import com.com.student_management.utils.HandID;
 import com.com.student_management.utils.RandomID;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CertificateModel extends Model {
     private static final String TAG = "CertificateModel";
@@ -60,11 +63,10 @@ public class CertificateModel extends Model {
         try {
             String id = RandomID.generateIDCertificate();
             Log.d(TAG, "create: " + id);
-            String hashId = HandID.encrypt(id);
             ArrayList<String> dateUpdated = new ArrayList<>();
             String dateCreated = FormatDateTime.formatDateTime();
-            Certificate certificate = new Certificate(hashId, name, description, dateCreated, dateUpdated);
-            firebaseFirestore.collection(CERTIFICATE_COLLECTION).document(hashId).set(certificate)
+            Certificate certificate = new Certificate(id, name, description, dateCreated, dateUpdated);
+            firebaseFirestore.collection(CERTIFICATE_COLLECTION).document(id).set(certificate.toMap())
                     .addOnSuccessListener(unused -> {
                         Log.d(TAG, "createCertificateSuccess: ");
                         listener.onCreateCertificateSuccess(certificate);
@@ -103,17 +105,22 @@ public class CertificateModel extends Model {
     public void getCertificate(String id, CertificateCallback callback) {
         try {
             firebaseFirestore.collection(CERTIFICATE_COLLECTION).document(id).get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Certificate certificate = documentSnapshot.toObject(Certificate.class);
-                            callback.onCallback(certificate);
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Certificate certificate = task.getResult().toObject(Certificate.class);
+                            Log.d(TAG, "getCertificateSuccess: " + certificate.toString());
+                            if (certificate != null) {
+                                callback.onCallback(certificate);
+                            } else {
+                                callback.onCallback(null);
+                            }
                         } else {
-                            callback.onCallback(null);
+                            Log.e(TAG, "getCertificateFailure: ", task.getException());
                         }
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "getCertificateFailure: ", e);
-                       callback.onCallback(null);
+                        callback.onCallback(null);
                     });
         } catch (Exception e) {
             Log.e(TAG, "getCertificateFailure: ", e);
@@ -124,17 +131,23 @@ public class CertificateModel extends Model {
     public void getAllCertificates(OnGetAllCertificatesListener listener) {
         try {
             firebaseFirestore.collection(CERTIFICATE_COLLECTION).get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         ArrayList<Certificate> certificates = new ArrayList<>();
-                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Certificate certificate = documentSnapshot.toObject(Certificate.class);
-                            certificates.add(certificate);
+                        @Override
+                        public void onSuccess(QuerySnapshot querySnapshot) {
+                            for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                                Certificate certificate = documentSnapshot.toObject(Certificate.class);
+                                certificates.add(certificate);
+                            }
+                            listener.onGetAllCertificatesSuccess(certificates);
                         }
-                        listener.onGetAllCertificatesSuccess(certificates);
                     })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "getAllCertificatesFailure: ", e);
-                        listener.onGetAllCertificatesFailure();
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "getAllCertificatesFailure: ", e);
+                            listener.onGetAllCertificatesFailure();
+                        }
                     });
         } catch (Exception e) {
             Log.e(TAG, "getAllCertificatesFailure: ", e);

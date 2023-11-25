@@ -30,7 +30,7 @@ public class UpdateCertificateBottomSheetFragment extends BottomSheetDialogFragm
     private static final String TAG = "UpdateCertificateBottomSheetFragment";
     private String idCertificate;
     private Context context = getContext();
-    private TextInputEditText etIdCertificate, etNameCertificate, etDescriptionCertificate;
+    private TextInputEditText etIdCertificate, etNameCertificate, etDescriptionCertificate, edtDateCreatedCertificate;
     private CertificateModel certificateModel;
     private MaterialButton btnUpdateCertificateNew;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -74,6 +74,7 @@ public class UpdateCertificateBottomSheetFragment extends BottomSheetDialogFragm
             public void onClick(View view) {
                 String nameCertificate = etNameCertificate.getText().toString().trim();
                 String descriptionCertificate = etDescriptionCertificate.getText().toString().trim();
+                String dateCreatedCertificate = edtDateCreatedCertificate.getText().toString().trim();
                 ArrayList<String> dateUpdated = new ArrayList<>();
                 dateUpdated.add(FormatDateTime.formatDateTime());
                 Certificate certificate = new Certificate(nameCertificate, descriptionCertificate, dateUpdated);
@@ -101,6 +102,7 @@ public class UpdateCertificateBottomSheetFragment extends BottomSheetDialogFragm
         etIdCertificate = view.findViewById(R.id.edtCertificateId);
         etNameCertificate = view.findViewById(R.id.edtCertificateNameUpdate);
         etDescriptionCertificate = view.findViewById(R.id.edtDescriptionCertificate);
+        edtDateCreatedCertificate = view.findViewById(R.id.edtDateCreatedCertificate);
         btnUpdateCertificateNew = view.findViewById(R.id.btnUpdateCertificateNew);
         certificateModel = new CertificateModel();
     }
@@ -110,8 +112,10 @@ public class UpdateCertificateBottomSheetFragment extends BottomSheetDialogFragm
             @Override
             public void onCallback(Certificate certificate) {
                 if (certificate != null) {
+                    Log.d(TAG, "onCallback: " + certificate.toString());
                     etNameCertificate.setText(certificate.getName());
                     etDescriptionCertificate.setText(certificate.getDescription());
+                    edtDateCreatedCertificate.setText(certificate.getDateCreated());
                 }
             }
         });

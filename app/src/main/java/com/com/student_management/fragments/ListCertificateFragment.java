@@ -26,7 +26,6 @@ import com.com.student_management.adapters.CertificateAdapter;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.models.CertificateModel;
-import com.com.student_management.utils.HandID;
 
 import java.util.ArrayList;
 
@@ -149,10 +148,7 @@ public class ListCertificateFragment extends Fragment {
             @Override
             public void onGetAllCertificatesSuccess(ArrayList<Certificate> certificates) {
                 try {
-                    for (Certificate certificate : certificates) {
-                        certificate.setId(HandID.decrypt(certificate.getId()));
-                        Log.d(TAG, "onGetAllCertificatesSuccess: " + certificates.toString());
-                    }
+                    Log.d(TAG, "onGetAllCertificatesSuccess: " + certificates.toString());
                     certificateAdapter.setData(certificates);
                 } catch (Exception e) {
                     e.printStackTrace();

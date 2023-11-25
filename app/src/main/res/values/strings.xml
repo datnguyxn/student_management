@@ -90,4 +90,5 @@
     <string name="user_id">User ID</string>
     <string name="update_certificate_information">UPDATE CERTIFICATE INFORMATION</string>
     <string name="update_certificate_new">UPDATE CERTIFICATE</string>
+    <string name="certificate_date_created">Certificate Date Created</string>
 </resources>

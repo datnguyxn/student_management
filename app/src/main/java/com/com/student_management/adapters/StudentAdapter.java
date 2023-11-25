@@ -24,7 +24,6 @@ import com.com.student_management.entities.Student;
 import com.com.student_management.fragments.DetailAndUpdateStudentFragment;
 import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.StudentModel;
-import com.com.student_management.utils.HandID;
 
 import java.util.ArrayList;
 
@@ -76,7 +75,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             @Override
             public void onClick(View view) {
                 try {
-                    bundle.putString("studentId", HandID.encrypt(student.getId()));
+                    bundle.putString("studentId", student.getId());
                     DetailAndUpdateStudentFragment detailAndUpdateStudentFragment = new DetailAndUpdateStudentFragment();
                     detailAndUpdateStudentFragment.setArguments(bundle);
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();

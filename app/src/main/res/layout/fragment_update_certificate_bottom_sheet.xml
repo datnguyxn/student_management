@@ -75,6 +75,20 @@
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edtDateCreatedCertificate"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/edtDescriptionCertificate"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/certificate_date_created"
+        android:inputType="number"
+        android:textColorHint="@color/white"
+        android:textColor="@color/FlatWhite"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:enabled="false"/>
 
     <com.google.android.material.button.MaterialButton
         android:layout_marginTop="50dp"
@@ -91,7 +105,7 @@
         app:cornerRadius="5dp"
         app:strokeColor="#FFBC8B"
         app:strokeWidth="2dp"
-        app:layout_constraintTop_toBottomOf="@+id/edtDescriptionCertificate"
+        app:layout_constraintTop_toBottomOf="@+id/edtDateCreatedCertificate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.com.student_management.entities.Student;
 import com.com.student_management.utils.FormatDateTime;
-import com.com.student_management.utils.HandID;
 import com.com.student_management.utils.RandomID;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,27 +72,22 @@ public class StudentModel extends Model {
         super(firebaseFirestore);
     }
 
-    public void create(String fullName, boolean gender, String phoneNumber, String birthday, String address, String major, String certificate, OnCreateStudentListener listener) {
+    public void create(String fullName, boolean gender, String phoneNumber, String birthday, String address, String major, ArrayList<String> certificates, OnCreateStudentListener listener) {
         try {
             String id = RandomID.generateIDStudent();
-            String hashID = HandID.encrypt(id);
             String email = id + "@student.tdtu.edu.vn";
             String dateCreated = FormatDateTime.formatDateTime();
             ArrayList<String> dateUpdated = new ArrayList<>();
-            ArrayList<String> idCertificate = new ArrayList<>();
-            if (isExistStudent(hashID)) {
+            if (isExistStudent(id)) {
                 Log.d(TAG, "create: Student is exist");
                 return;
             }
-            if (!certificate.equalsIgnoreCase("")) {
-                idCertificate.add(certificate);
-            }
-            Student newStudent = new Student(hashID, fullName, email, gender, birthday, phoneNumber, address, major, dateCreated, dateUpdated, idCertificate);
-            firebaseFirestore.collection(STUDENT_COLLECTION).document(hashID).set(newStudent.toMap())
+            Student newStudent = new Student(id, fullName, email, gender, birthday, phoneNumber, address, major, dateCreated, dateUpdated, certificates);
+            firebaseFirestore.collection(STUDENT_COLLECTION).document(id).set(newStudent.toMap())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "onSuccess: create user success");
+                            Log.d(TAG, "onSuccess: create student success");
                             Log.d(TAG, "create: " + newStudent.toString());
                             listener.onComplete(newStudent);
                         }

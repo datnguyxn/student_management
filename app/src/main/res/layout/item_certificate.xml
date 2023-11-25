@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/id"
             android:textColor="@color/FlatWhite"
+            android:layout_marginEnd="@dimen/_50dp"
             android:textSize="@dimen/_20sp"
             android:gravity="start"/>
 

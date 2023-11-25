@@ -40,7 +40,7 @@
             android:layout_marginStart="@dimen/_10dp"
             android:layout_height="wrap_content"
             android:text="@string/major"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start"
             android:textColor="@color/FlatWhite"
             android:textSize="@dimen/_20sp"/>
     </LinearLayout>

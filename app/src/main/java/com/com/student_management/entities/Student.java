@@ -41,6 +41,17 @@ public class Student {
         this.idCertificate = idCertificate;
     }
 
+    public Student(String fullName, boolean gender, String birthday, String phone, String major, String address, ArrayList<String> idCertificate) {
+        this.fullName = fullName;
+        this.email = email;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.phone = phone;
+        this.address = address;
+        this.major = major;
+        this.idCertificate = idCertificate;
+    }
+
     public Student(String fullName, String email, boolean gender, String birthday, String phone, String address) {
         this.fullName = fullName;
         this.email = email;
@@ -99,13 +110,21 @@ public class Student {
         this.email = email;
     }
 
-    public void setGender(boolean gender) {this.gender = gender;}
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
 
-    public boolean getGender() {return gender;}
+    public boolean getGender() {
+        return gender;
+    }
 
-    public void setBirthday(String birthday) {this.birthday = birthday;}
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
-    public String getBirthday() {return birthday;}
+    public String getBirthday() {
+        return birthday;
+    }
 
     public String getPhone() {
         return phone;
@@ -118,23 +137,42 @@ public class Student {
     public String getAddress() {
         return address;
     }
-    public String getMajor() {return major;}
-    public void setMajor(String major) {this.major = major;}
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
 
     public void setAddress(String address) {
         this.address = address;
     }
-    public void setDateCreated(String dateCreated) {this.dateCreated = dateCreated;}
 
-    public String getDateCreated() {return dateCreated;}
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
-    public void setDateUpdated(ArrayList<String> dateUpdated) {this.dateUpdated = dateUpdated;}
+    public String getDateCreated() {
+        return dateCreated;
+    }
 
-    public ArrayList<String> getDateUpdated() {return dateUpdated;}
+    public void setDateUpdated(ArrayList<String> dateUpdated) {
+        this.dateUpdated = dateUpdated;
+    }
 
-    public void setIdCertificate(ArrayList<String> idCertificate) {this.idCertificate = idCertificate;}
+    public ArrayList<String> getDateUpdated() {
+        return dateUpdated;
+    }
 
-    public ArrayList<String> getIdCertificate() {return idCertificate;}
+    public void setIdCertificate(ArrayList<String> idCertificate) {
+        this.idCertificate = idCertificate;
+    }
+
+    public ArrayList<String> getIdCertificate() {
+        return idCertificate;
+    }
 
     public Student(HashMap<String, Object> studentMap) {
         this.id = (String) studentMap.get("id");
@@ -150,6 +188,7 @@ public class Student {
         this.idCertificate = ArrayUtil.convert((JSONArray) studentMap.get("idCertificate"));
 
     }
+
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", id);
@@ -165,6 +204,7 @@ public class Student {
         result.put("idCertificate", idCertificate);
         return result;
     }
+
     public Map<String, Object> updateStudentToMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("fullName", fullName);
@@ -193,5 +233,8 @@ public class Student {
                 ", dateUpdated='" + dateUpdated + '\'' +
                 ", idCertificate='" + idCertificate + '\'' +
                 '}';
+    }
+    public String toStringForCSV() {
+        return id + "," + fullName + "," + email + "," + gender + "," + birthday + "," + phone + "," + address + "," + major + "," + dateCreated;
     }
 }

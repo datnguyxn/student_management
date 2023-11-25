@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.R;
 import com.com.student_management.adapters.CertificateOfStudentAdapter;
-import com.com.student_management.adapters.UserAdapter;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Certificate;
 import com.com.student_management.entities.Student;
@@ -34,7 +33,6 @@ import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.CertificateModel;
 import com.com.student_management.models.StudentModel;
 import com.com.student_management.utils.FormatDateTime;
-import com.com.student_management.utils.HandID;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -267,7 +265,7 @@ public class DetailAndUpdateStudentFragment extends Fragment {
             public void onExist(Student student) {
                 try {
                     Log.d(TAG, "onExist: " + student.toString());
-                    edtIdStudent.setText(HandID.decrypt(student.getId()));
+                    edtIdStudent.setText(student.getId());
                     edtNameStudent.setText(student.getFullName());
                     edtEmailStudent.setText(student.getEmail());
                     edtBirthday.setText(student.getBirthday());

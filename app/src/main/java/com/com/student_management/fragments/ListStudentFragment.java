@@ -22,17 +22,13 @@ import android.widget.ScrollView;
 
 import com.com.student_management.BroadcastReceiver;
 import com.com.student_management.constants.App;
-import com.com.student_management.MainActivity;
 import com.com.student_management.R;
 import com.com.student_management.adapters.StudentAdapter;
 import com.com.student_management.entities.Student;
 import com.com.student_management.models.StudentModel;
-import com.com.student_management.utils.HandID;
 import com.com.student_management.utils.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +60,7 @@ public class ListStudentFragment extends Fragment {
             if (action != null) {
                 switch (action) {
                     case App.ACTION_UPDATE_STUDENT:
+                    case App.ACTION_IMPORT_STUDENT_FROM_CSV:
                         if (studentAdapter != null) {
                             studentAdapter.clearData();
                             getAllStudent();
@@ -77,6 +74,7 @@ public class ListStudentFragment extends Fragment {
     private IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(App.ACTION_UPDATE_STUDENT);
+        intentFilter.addAction(App.ACTION_IMPORT_STUDENT_FROM_CSV);
         return intentFilter;
     }
 
@@ -146,7 +144,6 @@ public class ListStudentFragment extends Fragment {
                     Log.d(TAG, "onCompleted: " + students.toString());
                     ArrayList<String> majors = new ArrayList<>();
                     for (Student student : students) {
-                        student.setId(HandID.decrypt(student.getId()));
                         majors.add(student.getMajor());
 //                    StringBuilder[] stringBuilder = new StringBuilder[majors.size()];
 //                    for (int i = 0; i < majors.size(); i++) {

@@ -31,4 +31,5 @@ public class App {
     public static final int DELETE_CERTIFICATE = 2131296862;
     public static final String ACTION_UPDATE_CERTIFICATE = "update_certificate";
     public static final String ALGORITHM = "AES";
+    public static final String ACTION_IMPORT_STUDENT_FROM_CSV = "import_student_from_csv";
 }

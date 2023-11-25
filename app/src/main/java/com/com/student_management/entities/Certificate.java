@@ -1,6 +1,10 @@
 package com.com.student_management.entities;
 
 
+import com.com.student_management.utils.ArrayUtil;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,10 +83,18 @@ public class Certificate {
     public String getDateCreated() {
         return dateCreated;
     }
-
     public ArrayList<String> getDateUpdated() {
         return dateUpdated;
     }
+
+    public Certificate(HashMap<String, Object> certificateMap) {
+        this.id = (String) certificateMap.get("id");
+        this.name = (String) certificateMap.get("name");
+        this.description = (String) certificateMap.get("description");
+        this.dateCreated = (String) certificateMap.get("dateCreated");
+        this.dateUpdated = ArrayUtil.convert((JSONArray) certificateMap.get("dateUpdated"));
+    }
+
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -100,6 +112,10 @@ public class Certificate {
         result.put("description", description);
         result.put("dateUpdated", dateUpdated);
         return result;
+    }
+
+    public String toStringToCSV() {
+        return id + "," + name + "," + description + "," + dateCreated + "," + dateUpdated;
     }
 
     @Override

@@ -25,6 +25,8 @@ import com.com.student_management.models.StudentModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NewStudentFragment#newInstance} factory method to
@@ -155,7 +157,9 @@ public class NewStudentFragment extends Fragment {
     }
 
     private void createStudent(String certificate, boolean finalIsGender) {
-        studentModel.create(fullName, finalIsGender, phoneNumber, birthday, address, major, certificate, new StudentModel.OnCreateStudentListener() {
+        ArrayList<String> certificateList = new ArrayList<>();
+        certificateList.add(certificate);
+        studentModel.create(fullName, finalIsGender, phoneNumber, birthday, address, major, certificateList, new StudentModel.OnCreateStudentListener() {
 
             @Override
             public void onComplete(Student student) {

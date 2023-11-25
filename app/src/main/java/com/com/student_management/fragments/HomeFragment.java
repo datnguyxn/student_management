@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +26,22 @@ import android.widget.TextView;
 
 import com.com.student_management.R;
 import com.com.student_management.constants.App;
+import com.com.student_management.entities.Certificate;
+import com.com.student_management.entities.Student;
 import com.com.student_management.middleware.RequireRole;
+import com.com.student_management.models.CertificateModel;
+import com.com.student_management.models.StudentModel;
 import com.com.student_management.models.UserModel;
+import com.com.student_management.utils.CSVFile;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.com.student_management.entities.User;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,22 +66,16 @@ public class HomeFragment extends Fragment {
     private UserModel userModel;
     private ScrollView scrollView;
     private ConstraintLayout constraintLayout;
+    private StudentModel studentModel;
+    private CertificateModel certificateModel;
     private String uuid;
     private String role;
+    private Uri fileUri;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -82,15 +83,6 @@ public class HomeFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -138,6 +130,40 @@ public class HomeFragment extends Fragment {
                 startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
             }
         });
+        btnExportStudent.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnExportStudent clicked");
+            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                try {
+                    getAllStudents();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        btnImportCertificate.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnImportCertificate clicked");
+            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("text/csv");
+                startActivityForResult(intent, 1000);
+            }
+        });
+        btnExportCertificate.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: btnExportCertificate clicked");
+            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+                replaceFragment(new HomeFragment());
+            } else {
+                try {
+                    getAllCertificates();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         return view;
     }
 
@@ -145,12 +171,6 @@ public class HomeFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = getActivity();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        activity = null;
     }
 
     private void init(View view) {
@@ -164,6 +184,8 @@ public class HomeFragment extends Fragment {
         btnImportCertificate = (MaterialButton) view.findViewById(R.id.btnImportCertificate);
         btnExportCertificate = (MaterialButton) view.findViewById(R.id.btnExportCertificate);
         userModel = new UserModel();
+        studentModel = new StudentModel();
+        certificateModel = new CertificateModel();
         SharedPreferences sharedPreferences = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
         uuid = sharedPreferences.getString(App.SHARED_PREFERENCES_UUID, null);
         SharedPreferences sharedPreferences1 = activity.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
@@ -183,31 +205,139 @@ public class HomeFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == FILE_PICKER_REQUEST_CODE) {
-            // Get the selected file URI
-            Uri uri = data.getData();
-            Log.d(TAG, "onActivityResult: " + uri.toString());
-
-            // Now you can read the CSV file using the URI
-            readCSVFile(uri);
+            fileUri = data.getData();
+            try {
+                CSVFile csvFile = new CSVFile(getActivity().getContentResolver().openInputStream(fileUri));
+                ArrayList<Student> studentArrayList = csvFile.readCSVForStudent();
+                Log.d(TAG, "onActivityResult: " + studentArrayList.toString());
+                setDataForStudent(studentArrayList);
+                replaceFragment(new ListStudentFragment());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (requestCode == 1000) {
+            fileUri = data.getData();
+            try {
+                CSVFile csvFile = new CSVFile(getActivity().getContentResolver().openInputStream(fileUri));
+                ArrayList<Certificate> certificateArrayList = csvFile.readCSVForCertificate();
+                Log.d(TAG, "onActivityResult: " + certificateArrayList.toString());
+                setDataForCertificate(certificateArrayList);
+                replaceFragment(new ListCertificateFragment());
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void readCSVFile(Uri uri) {
-        try {
-            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    private void setDataForCertificate(ArrayList<Certificate> certificateArrayList) {
+        for (Certificate certificate: certificateArrayList) {
+            certificateModel.create(certificate.getName(), certificate.getDescription(), new CertificateModel.OnCreateCertificateListener() {
+                @Override
+                public void onCreateCertificateSuccess(Certificate certificate) {
+                    Log.d(TAG, "onCreateCertificateSuccess: " + certificate.toString());
+                }
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Process each line of the CSV file
-                String[] values = line.split(",");
-                // Do something with the values
+                @Override
+                public void onCreateCertificateFailure() {
+                    Log.d(TAG, "onCreateCertificateFailure: ");
+                }
+            });
+        }
+    }
+
+    private void setDataForStudent(ArrayList<Student> students) {
+        for (Student student : students) {
+            studentModel.create(student.getFullName(), student.getGender(), student.getPhone(), student.getBirthday(), student.getAddress(), student.getMajor(), student.getIdCertificate(), new StudentModel.OnCreateStudentListener() {
+                @Override
+                public void onComplete(Student student) {
+                    Log.d(TAG, "onComplete: " + student.toString());
+                }
+
+                @Override
+                public void onFailure() {
+                    Log.d(TAG, "onFailure: ");
+                }
+            });
+        }
+    }
+
+    private void getAllStudents() {
+        studentModel.getAllStudents(new StudentModel.OnGetAllStudentsListener() {
+            @Override
+            public void onCompleted(ArrayList<Student> students) {
+                try {
+                    File csvFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "students.csv");
+                    Log.d(TAG, "onCreate: " + csvFile);
+                    FileWriter writer = new FileWriter(csvFile.getAbsoluteFile());
+                    if (!csvFile.exists()) {
+                        csvFile.createNewFile();
+                    }
+                    BufferedWriter bw = new BufferedWriter(writer);
+                    try {
+                        for (Student student : students) {
+                            if (student.getIdCertificate().size() > 0) {
+                                Log.d(TAG, "onCompleted: " + student.getIdCertificate().toString().substring(1, student.getIdCertificate().toString().length() - 1).replaceAll("\\s+", ""));
+                                bw.write(student.toStringForCSV() + "," + student.getIdCertificate().toString().substring(1, student.getIdCertificate().toString().length() - 1).replaceAll("\\s+", ""));
+                                bw.newLine();
+                            } else {
+                                Log.d(TAG, "onCompleted: " + student.toStringForCSV());
+                                bw.write(student.toStringForCSV());
+                                bw.newLine();
+                            }
+                        }
+                        bw.flush();
+                        bw.close();
+                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.setType("text/csv");
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+                        startActivity(Intent.createChooser(intent, "Share CSV"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getAllCertificates() {
+        certificateModel.getAllCertificates(new CertificateModel.OnGetAllCertificatesListener() {
+            @Override
+            public void onGetAllCertificatesSuccess(ArrayList<Certificate> certificates) {
+                try {
+                    File csvFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "certificates.csv");
+                    Log.d(TAG, "onCreate: " + csvFile);
+                    FileWriter writer = new FileWriter(csvFile.getAbsoluteFile());
+                    if (!csvFile.exists()) {
+                        csvFile.createNewFile();
+                    }
+                    BufferedWriter bw = new BufferedWriter(writer);
+                    try {
+                        for (Certificate certificate : certificates) {
+                            Log.d(TAG, "onCompleted: " + certificate.toStringToCSV());
+                            bw.write(certificate.toStringToCSV());
+                            bw.newLine();
+                        }
+                        bw.flush();
+                        bw.close();
+                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.setType("text/csv");
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+                        startActivity(Intent.createChooser(intent, "Share CSV"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onGetAllCertificatesFailure() {
+                Log.d(TAG, "onGetAllCertificatesFailure: ");
+            }
+        });
     }
-
 }

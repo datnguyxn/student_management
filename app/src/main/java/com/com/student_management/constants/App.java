@@ -32,4 +32,6 @@ public class App {
     public static final String ACTION_UPDATE_CERTIFICATE = "update_certificate";
     public static final String ALGORITHM = "AES";
     public static final String ACTION_IMPORT_STUDENT_FROM_CSV = "import_student_from_csv";
+    public static final int ACTION_SORT_A_TO_Z = 2131296933;
+    public static final int ACTION_SORT_Z_TO_A = 2131296934;
 }

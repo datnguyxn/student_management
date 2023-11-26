@@ -91,4 +91,11 @@
     <string name="update_certificate_information">UPDATE CERTIFICATE INFORMATION</string>
     <string name="update_certificate_new">UPDATE CERTIFICATE</string>
     <string name="certificate_date_created">Certificate Date Created</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Type name…</string>
+    <string name="action_settings">Settings</string>
+    <string name="toolbar_title">Students</string>
+    <string name="action_sort">sort</string>
+    <string name="sort_a_to_z">Sort A to Z</string>
+    <string name="sort_z_to_a">Sort Z to A</string>
 </resources>

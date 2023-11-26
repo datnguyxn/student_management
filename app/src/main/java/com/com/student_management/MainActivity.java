@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.com.student_management.constants.App;
 import com.com.student_management.constants.Roles;
@@ -35,7 +36,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String CREATE_FRAGMENT_TAG = "CreateFragment";
     private DrawerLayout drawerLayout;
     private TextView tvRole;

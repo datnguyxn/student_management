@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -27,29 +29,23 @@ import com.com.student_management.models.StudentModel;
 import com.com.student_management.utils.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 
-public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
-    private static final String TAG = "StudentAdapter";
+public class SearchStudentAdapter extends RecyclerView.Adapter<SearchStudentAdapter.SeachStudentViewHolder> implements Filterable {
+    private static final String TAG = "SearchStudentAdapter";
     private Context context;
     private ArrayList<Student> students;
+    private ArrayList<Student> studentsFilter;
     private StudentModel studentModel = new StudentModel();
     private Bundle bundle = new Bundle();
     private AlertDialog alertDialog;
     private String role;
 
-    public StudentAdapter(Context context, ArrayList<Student> students) {
-        this.context = context;
-        this.students = students;
-    }
-
-    public StudentAdapter(Context context) {
+    public SearchStudentAdapter(Context context) {
         this.context = context;
         this.students = new ArrayList<>();
         SharedPreferences sharedPreferences = context.getSharedPreferences(App.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
         role = sharedPreferences.getString("role", "");
+        this.studentsFilter = students;
     }
 
     public void setStudents(ArrayList<Student> students) {
@@ -57,21 +53,22 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         notifyDataSetChanged();
     }
 
-    public void clearData() {
-        this.students.clear();
+    public void setStudentsFilter(ArrayList<Student> studentsFilter) {
+        this.studentsFilter = studentsFilter;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public StudentAdapter.StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearchStudentAdapter.SeachStudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_student, parent, false);
-        return new StudentAdapter.StudentViewHolder(view);
+        return new SearchStudentAdapter.SeachStudentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StudentAdapter.StudentViewHolder holder, int position) {
-        Student student = students.get(position);
+    public void onBindViewHolder(@NonNull SearchStudentAdapter.SeachStudentViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: " + studentsFilter.get(position).toString());
+        Student student = studentsFilter.get(position);
         holder.tvId.setText(student.getId());
         holder.tvNameStudent.setText(student.getFullName());
         holder.tvMajor.setText(StringUtil.convertString(student.getMajor()));
@@ -134,25 +131,66 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     @Override
     public int getItemCount() {
-        return students.size();
+        return studentsFilter.size();
     }
 
-    public void sortStudentAZ() {
-       students.sort(Comparator.comparing(Student::getFullName));
-       notifyDataSetChanged();
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                Log.d(TAG, "performFiltering: " + charString);
+                if (charString.isEmpty()) {
+                    studentsFilter = students;
+                    setStudentsFilter(studentsFilter);
+                } else {
+                    ArrayList<Student> filteredList = new ArrayList<>();
+                    for (Student student : students) {
+                        if (student.getId().toLowerCase().contains(charString.toLowerCase()))  {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getFullName().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getMajor().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getPhone().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getAddress().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getEmail().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        } else if (student.getBirthday().toLowerCase().contains(charString.toLowerCase())) {
+                            Log.d(TAG, "performFiltering: " + student.toString());
+                            filteredList.add(student);
+                        }
+                    }
+                    studentsFilter = filteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = studentsFilter;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                studentsFilter = (ArrayList<Student>) filterResults.values;
+                setStudentsFilter(studentsFilter);
+            }
+        };
     }
 
-    public void sortStudentZA() {
-        students.sort(Comparator.comparing(Student::getFullName).reversed());
-        notifyDataSetChanged();
-    }
-
-    public static class StudentViewHolder extends RecyclerView.ViewHolder {
+    public static class SeachStudentViewHolder extends RecyclerView.ViewHolder {
         private TextView tvId, tvNameStudent, tvMajor;
         private ImageView menu;
         private LinearLayout itemStudent;
 
-        public StudentViewHolder(@NonNull View itemView) {
+        public SeachStudentViewHolder(@NonNull View itemView) {
             super(itemView);
             tvId = (TextView) itemView.findViewById(R.id.tvId);
             tvNameStudent = (TextView) itemView.findViewById(R.id.tvNameStudent);

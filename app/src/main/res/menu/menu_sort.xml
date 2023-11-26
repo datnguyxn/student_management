@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.ListStudentFragment">
+    <item
+        android:id="@+id/action_sortAtoZ"
+        android:title="@string/sort_a_to_z" />
+
+    <item
+        android:id="@+id/action_sortZToA"
+        android:src="@drawable/baseline_sort_24"
+        android:title="@string/sort_z_to_a"/>
+
+
+</menu>

@@ -21,5 +21,17 @@ public class StringUtil {
         }
         return stringBuilder;
     }
+
+    public static String convertString(String str) {
+        String[] words = str.split("\\s+");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                stringBuilder.append(word.charAt(0));
+            }
+        }
+        return stringBuilder.toString().toUpperCase();
+    }
 }
 

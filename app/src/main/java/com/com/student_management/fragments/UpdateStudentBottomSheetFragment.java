@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment {
     private static final String TAG = "UpdateStudentBottomSheetFragment";
-    private TextInputEditText etId, etName, edtBirthday, etEmail, etPhone, etMajor, etAddress;
+    private TextInputEditText etId, etName, edtBirthday, etEmail, etPhone, etMajor, etAddress, edtDateCreatedStudentInformation;
     private Context context;
     private CheckBox checkBoxMale, checkBoxFemale;
     private MaterialButton btnUpdateStudent;
@@ -40,7 +40,7 @@ public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment 
     private String id;
     private Student student;
     private Map<String, Object> students = new HashMap<>();
-    private String studentId, name, birthday, email, phone, major, address;
+    private String studentId, name, birthday, email, phone, major, address, dateCreated;
     private boolean isMale = true;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -75,7 +75,7 @@ public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment 
         init(view);
         Bundle mArgs = getArguments();
         if (mArgs != null) {
-            id = mArgs.getString("id");
+            id = mArgs.getString("studentId");
             Log.d(TAG, "onCreateView: " + id);
             setValueForStudent(id);
         }
@@ -126,7 +126,8 @@ public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment 
         etAddress = view.findViewById(R.id.edtAddress);
         checkBoxMale = view.findViewById(R.id.checkBoxMale);
         checkBoxFemale = view.findViewById(R.id.checkBoxFemale);
-        btnUpdateStudent = view.findViewById(R.id.btnUpdateUser);
+        edtDateCreatedStudentInformation = view.findViewById(R.id.edtDateCreatedStudentInformation);
+        btnUpdateStudent = view.findViewById(R.id.btnUpdateStudentInformation);
         studentModel = new StudentModel();
     }
 
@@ -141,6 +142,7 @@ public class UpdateStudentBottomSheetFragment extends BottomSheetDialogFragment 
                 etPhone.setText(student.getPhone());
                 etMajor.setText(student.getMajor());
                 etAddress.setText(student.getAddress());
+                edtDateCreatedStudentInformation.setText(student.getDateCreated());
                if (student.getGender()) {
                    checkBoxMale.setChecked(true);
                } else {

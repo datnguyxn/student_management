@@ -98,4 +98,6 @@
     <string name="action_sort">sort</string>
     <string name="sort_a_to_z">Sort A to Z</string>
     <string name="sort_z_to_a">Sort Z to A</string>
+    <string name="date_create_user">Date Created</string>
+    <string name="update_student">Update Student</string>
 </resources>

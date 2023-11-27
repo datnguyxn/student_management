@@ -22,6 +22,7 @@ import com.com.student_management.R;
 import com.com.student_management.constants.App;
 import com.com.student_management.entities.Student;
 import com.com.student_management.fragments.DetailAndUpdateStudentFragment;
+import com.com.student_management.fragments.UpdateStudentBottomSheetFragment;
 import com.com.student_management.middleware.RequireRole;
 import com.com.student_management.models.StudentModel;
 import com.com.student_management.utils.StringUtil;
@@ -122,6 +123,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
                                             alertDialog.dismiss();
                                         })
                                         .show();
+                            } else if (menuItem.getItemId() == App.UPDATE_STUDENT) {
+                                bundle.putString("studentId", student.getId());
+                                UpdateStudentBottomSheetFragment updateStudentBottomSheetFragment = new UpdateStudentBottomSheetFragment();
+                                updateStudentBottomSheetFragment.setArguments(bundle);
+                                updateStudentBottomSheetFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), updateStudentBottomSheetFragment.getTag());
                             }
                             return false;
                         }

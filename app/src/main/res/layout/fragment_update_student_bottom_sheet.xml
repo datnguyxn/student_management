@@ -44,7 +44,8 @@
         android:textColorHint="@color/white"
         android:textColor="@color/FlatWhite"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:enabled="false"/>
 
     <com.google.android.material.textfield.TextInputEditText
         android:layout_marginTop="20dp"
@@ -169,13 +170,25 @@
         android:textColorHint="@color/white"
         android:textColor="@color/FlatWhite"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/etIdCertificate" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edtDateCreatedStudentInformation"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/edtAddress"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/date_created"
+        android:textColorHint="@color/white"
+        android:textColor="@color/FlatWhite"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:enabled="false"/>
 
     <com.google.android.material.button.MaterialButton
         android:layout_marginTop="20dp"
-        android:id="@+id/btnUpdateUser"
+        android:id="@+id/btnUpdateStudentInformation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:backgroundTint="@color/transparent"
@@ -188,7 +201,7 @@
         app:cornerRadius="5dp"
         app:strokeColor="#FFBC8B"
         app:strokeWidth="2dp"
-        app:layout_constraintTop_toBottomOf="@+id/edtAddress"
+        app:layout_constraintTop_toBottomOf="@+id/edtDateCreatedStudentInformation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

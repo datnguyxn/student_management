@@ -122,7 +122,7 @@ public class HomeFragment extends Fragment {
 
         btnImportStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnImportStudent clicked");
-            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+            if (RequireRole.checkRole(role, getContext())) {
                 replaceFragment(new HomeFragment());
             } else {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
         });
         btnExportStudent.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: btnExportStudent clicked");
-            if (RequireRole.checkRole(role, getContext()) || RequireRole.checkManagerRole(role, getContext())) {
+            if (RequireRole.checkRole(role, getContext())) {
                 replaceFragment(new HomeFragment());
             } else {
                 try {

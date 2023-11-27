@@ -73,7 +73,7 @@ public class Certificate {
 
 
     public void setDateCreated(String dateCreated) {
-        this.dateCreated = Certificate.this.dateCreated;
+        this.dateCreated = dateCreated;
     }
 
     public void setDateUpdated(ArrayList<String> dateUpdated) {

@@ -7,7 +7,7 @@
         android:title="@string/update_student" />
 
     <item
-        android:id="@+id/delete_student"
+        android:id="@+id/delete_student_information"
         android:title="@string/delete_student" />
 
 </menu>

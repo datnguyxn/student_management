@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -56,24 +57,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Log.d(TAG, "onNavigationItemSelected: " + item.getItemId());
-                switch (item.getItemId()) {
-                    case App.BOTTOM_HOME:
-                        replaceFragment(new HomeFragment());
-//                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+                if (item.getItemId() == R.id.bottom_home) {
+                    replaceFragment(new HomeFragment());
+                    return true;
+                } else if (item.getItemId() == R.id.bottom_manager) {
+                    if (role.equals(Roles.ADMIN.name())) {
+                        replaceFragment(new ManagerFragment());
                         return true;
-                    case App.BOTTOM_MANAGER:
-                        if (role.equals(Roles.ADMIN.name())) {
-                            replaceFragment(new ManagerFragment());
-                        } else {
-                            Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
-                        }
-                        return true;
-                    case App.BOTTOM_ACCOUNT:
-                        replaceFragment(new AccountFragment());
-                        return true;
-                    default:
+                    } else {
+                        Toast.makeText(MainActivity.this, "You don't have permission to access this page", Toast.LENGTH_SHORT).show();
                         return false;
+                    }
+                } else if (item.getItemId() == R.id.bottom_setting) {
+                    replaceFragment(new AccountFragment());
+                    return true;
                 }
+                return false;
             }
         });
     }

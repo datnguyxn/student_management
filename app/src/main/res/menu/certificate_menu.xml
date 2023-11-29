@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/updateCertificate"
+        android:id="@+id/update_certificate"
         android:title="@string/update_certificate" />
     <item
-        android:id="@+id/delete_student"
+        android:id="@+id/delete_certificate"
         android:title="@string/delete_certificate" />
 
 </menu>

@@ -99,7 +99,7 @@ public class SearchStudentAdapter extends RecyclerView.Adapter<SearchStudentAdap
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             Log.d("menu", "onMenuItemClick: " + menuItem.getItemId());
-                            if (menuItem.getItemId() == App.DELETE_STUDENT) {
+                            if (menuItem.getItemId() == R.id.delete_student_information) {
                                 alertDialog = new AlertDialog.Builder(context)
                                         .setTitle("Delete Student Information")
                                         .setMessage("Are you sure you want to delete this student information?")

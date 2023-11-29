@@ -94,102 +94,96 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Log.d("menu", "onMenuItemClick: " + item.getItemId());
-                        switch (item.getItemId()) {
-                            case App.UPDATE_USER:
-                                bundle.putString("uuid", user.getUuid());
-                                UpdateUserBottomSheetFragment bottomSheetDialogFragment = new UpdateUserBottomSheetFragment();
-                                bottomSheetDialogFragment.setArguments(bundle);
-                                bottomSheetDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
-                                return true;
-                            case App.DELETE_USER:
-                                //handle menu2 click
-                                Log.d("menu", "onMenuItemClick: " + item.getItemId());
-                                bundle.putString("uuid", user.getUuid());
-                                alertDialog = new AlertDialog.Builder(context)
-                                        .setTitle("Delete User Information")
-                                        .setMessage("Are you sure?")
-                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                //set what would happen when positive button is clicked
-                                                Log.d(TAG, "onClick: delete user");
-                                                userModel.deleteUser(user.getUuid(), new UserModel.IsDeletedCallBacks() {
-                                                    @Override
-                                                    public boolean onDeleted() {
-                                                        users.remove(position);
-                                                        notifyDataSetChanged();
-                                                        return true;
-                                                    }
-                                                });
-                                            }
-                                        })
-                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                //set what should happen when negative button is clicked
-                                                Log.d(TAG, "onClick: cancel delete user");
-                                            }
-                                        })
-                                        .show();
-                                return true;
-                            case App.LOCK_USER:
-                                //handle menu3 click
-                                Log.d("menu", "onMenuItemClick: " + item.getItemId());
-                                bundle.putString("uuid", user.getUuid());
-                                alertDialog = new AlertDialog.Builder(context)
-                                        .setTitle("Lock User Information")
-                                        .setMessage("Are you sure?")
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                //set what would happen when positive button is clicked
-                                                Log.d(TAG, "onClick: Lock user");
-                                                if (user.getStatus().equals("active")) {
-                                                    userModel.setLockUser(user.getUuid(), "locked", new UserModel.IsLockedCallBacks() {
-                                                                @Override
-                                                                public boolean onLocked() {
-                                                                    sendBroadcastToFragment(4);
-                                                                    return true;
-                                                                }
+                        if (item.getItemId() == R.id.update_user) {
+                            bundle.putString("uuid", user.getUuid());
+                            UpdateUserBottomSheetFragment bottomSheetDialogFragment = new UpdateUserBottomSheetFragment();
+                            bottomSheetDialogFragment.setArguments(bundle);
+                            bottomSheetDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+                            return true;
+                        } else if (item.getItemId() == R.id.lock_user) {
+                            Log.d("menu", "onMenuItemClick: " + item.getItemId());
+                            bundle.putString("uuid", user.getUuid());
+                            alertDialog = new AlertDialog.Builder(context)
+                                    .setTitle("Lock User Information")
+                                    .setMessage("Are you sure?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //set what would happen when positive button is clicked
+                                            Log.d(TAG, "onClick: Lock user");
+                                            if (user.getStatus().equals("active")) {
+                                                userModel.setLockUser(user.getUuid(), "locked", new UserModel.IsLockedCallBacks() {
+                                                            @Override
+                                                            public boolean onLocked() {
+                                                                sendBroadcastToFragment(4);
+                                                                return true;
                                                             }
-                                                    );
-                                                } else if (user.getStatus().equals("locked")) {
-                                                    userModel.setLockUser(user.getUuid(), "active", new UserModel.IsLockedCallBacks() {
-                                                                @Override
-                                                                public boolean onLocked() {
-                                                                    sendBroadcastToFragment(4);
-                                                                    return true;
-                                                                }
+                                                        }
+                                                );
+                                            } else if (user.getStatus().equals("locked")) {
+                                                userModel.setLockUser(user.getUuid(), "active", new UserModel.IsLockedCallBacks() {
+                                                            @Override
+                                                            public boolean onLocked() {
+                                                                sendBroadcastToFragment(4);
+                                                                return true;
                                                             }
-                                                    );
+                                                        }
+                                                );
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //set what should happen when negative button is clicked
+                                            Log.d(TAG, "onClick: cancel delete user");
+                                            alertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
+                            return true;
+                        } else if (item.getItemId() == R.id.history_user) {
+                            Log.d("menu", "onMenuItemClick: " + item.getItemId());
+                            bundle.putString("uuid", user.getUuid());
+                            ViewHistoryUserBottomSheetFragment bottomSheetDialogFragment1 = new ViewHistoryUserBottomSheetFragment();
+                            bottomSheetDialogFragment1.setArguments(bundle);
+                            bottomSheetDialogFragment1.show(((FragmentActivity) context).getSupportFragmentManager(), bottomSheetDialogFragment1.getTag());
+                            return true;
+                        } else if (item.getItemId() == R.id.delete_user) {
+                            Log.d("menu", "onMenuItemClick: " + item.getItemId());
+                            bundle.putString("uuid", user.getUuid());
+                            alertDialog = new AlertDialog.Builder(context)
+                                    .setTitle("Delete User Information")
+                                    .setMessage("Are you sure?")
+                                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //set what would happen when positive button is clicked
+                                            Log.d(TAG, "onClick: delete user");
+                                            userModel.deleteUser(user.getUuid(), new UserModel.IsDeletedCallBacks() {
+                                                @Override
+                                                public boolean onDeleted() {
+                                                    users.remove(position);
+                                                    notifyDataSetChanged();
+                                                    return true;
                                                 }
-                                            }
-                                        })
-                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                //set what should happen when negative button is clicked
-                                                Log.d(TAG, "onClick: cancel delete user");
-                                                alertDialog.dismiss();
-                                            }
-                                        })
-                                        .show();
-                                return true;
-                            case App.HISTORY_USER:
-                                Log.d("menu", "onMenuItemClick: " + item.getItemId());
-                                bundle.putString("uuid", user.getUuid());
-                                ViewHistoryUserBottomSheetFragment bottomSheetDialogFragment1 = new ViewHistoryUserBottomSheetFragment();
-                                bottomSheetDialogFragment1.setArguments(bundle);
-                                bottomSheetDialogFragment1.show(((FragmentActivity) context).getSupportFragmentManager(), bottomSheetDialogFragment1.getTag());
-                                return true;
-                            default:
-                                return false;
+                                            });
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //set what should happen when negative button is clicked
+                                            Log.d(TAG, "onClick: cancel delete user");
+                                        }
+                                    })
+                                    .show();
+                            return true;
                         }
+                        popup.show();
+                        return false;
                     }
-
                 });
-                //displaying the popup
-                popup.show();
             }
         });
     }

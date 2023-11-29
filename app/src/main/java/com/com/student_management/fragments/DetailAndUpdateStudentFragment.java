@@ -141,95 +141,93 @@ public class DetailAndUpdateStudentFragment extends Fragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         Log.d(TAG, "onMenuItemClick: " + menuItem.getItemId());
-                        switch (menuItem.getItemId()) {
-                            case App.UPDATE_STUDENT_INFO:
-                                setEnableEditText(true);
-                                edtDateCreated.setEnabled(false);
-                                edtIdStudent.setEnabled(false);
-                                edtEmailStudent.setEnabled(false);
-                                btnUpdateStudent.setVisibility(View.VISIBLE);
-                                btnCancel.setVisibility(View.VISIBLE);
+                        if (menuItem.getItemId() == R.id.update_student_detail) {
+                            setEnableEditText(true);
+                            edtDateCreated.setEnabled(false);
+                            edtIdStudent.setEnabled(false);
+                            edtEmailStudent.setEnabled(false);
+                            btnUpdateStudent.setVisibility(View.VISIBLE);
+                            btnCancel.setVisibility(View.VISIBLE);
+                            if (checkBoxMale.isChecked()) {
+                                isCheck = true;
+                            } else if (checkBoxFemale.isChecked()) {
+                                isCheck = false;
+                            }
+                            btnUpdateStudent.setOnClickListener(v -> {
+                                String name = edtNameStudent.getText().toString().trim();
+                                String email = edtEmailStudent.getText().toString().trim();
+                                String birthday = edtBirthday.getText().toString().trim();
+                                String phone = edtPhoneStudent.getText().toString().trim();
+                                String address = edtAddress.getText().toString().trim();
+                                String major = edtMajorStudent.getText().toString().trim();
+                                ArrayList<String> dateUpdated = new ArrayList<>();
+                                boolean isMale;
                                 if (checkBoxMale.isChecked()) {
-                                    isCheck = true;
-                                } else if (checkBoxFemale.isChecked()) {
-                                    isCheck = false;
+                                    isMale = true;
+                                    checkBoxFemale.setChecked(false);
+                                } else {
+                                    isMale = false;
+                                    checkBoxMale.setChecked(false);
                                 }
-                                btnUpdateStudent.setOnClickListener(v -> {
-                                    String name = edtNameStudent.getText().toString().trim();
-                                    String email = edtEmailStudent.getText().toString().trim();
-                                    String birthday = edtBirthday.getText().toString().trim();
-                                    String phone = edtPhoneStudent.getText().toString().trim();
-                                    String address = edtAddress.getText().toString().trim();
-                                    String major = edtMajorStudent.getText().toString().trim();
-                                    ArrayList<String> dateUpdated = new ArrayList<>();
-                                    boolean isMale;
-                                    if (checkBoxMale.isChecked()) {
-                                        isMale = true;
-                                        checkBoxFemale.setChecked(false);
-                                    } else {
-                                        isMale = false;
-                                        checkBoxMale.setChecked(false);
+                                String dateUpdate = FormatDateTime.formatDateTime();
+                                dateUpdated.add(dateUpdate);
+                                Student updateStudent = new Student(name, email, isMale, birthday, phone, address, major, dateUpdated);
+                                Map<String, Object> studentMap = updateStudent.updateStudentToMap();
+                                studentModel.updateStudent(studentId, studentMap, new StudentModel.OnStudentUpdatedLintener() {
+                                    @Override
+                                    public void onCompleted() {
+                                        Log.d(TAG, "onCompleted: update student success");
+                                        setEnableEditText(false);
+                                        btnUpdateStudent.setVisibility(View.GONE);
+                                        btnCancel.setVisibility(View.GONE);
                                     }
-                                    String dateUpdate = FormatDateTime.formatDateTime();
-                                    dateUpdated.add(dateUpdate);
-                                    Student updateStudent = new Student(name, email, isMale, birthday, phone, address, major, dateUpdated);
-                                    Map<String, Object> studentMap = updateStudent.updateStudentToMap();
-                                    studentModel.updateStudent(studentId, studentMap, new StudentModel.OnStudentUpdatedLintener() {
-                                        @Override
-                                        public void onCompleted() {
-                                            Log.d(TAG, "onCompleted: update student success");
-                                            setEnableEditText(false);
-                                            btnUpdateStudent.setVisibility(View.GONE);
-                                            btnCancel.setVisibility(View.GONE);
-                                        }
 
-                                        @Override
-                                        public void onFailure() {
-                                            Log.e(TAG, "onFailure: update student failure");
-                                            Toast.makeText(getContext(), "Update student failure", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                    @Override
+                                    public void onFailure() {
+                                        Log.e(TAG, "onFailure: update student failure");
+                                        Toast.makeText(getContext(), "Update student failure", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
-                                });
-                                btnCancel.setOnClickListener(v -> {
-                                    setEnableEditText(false);
-                                    btnUpdateStudent.setVisibility(View.GONE);
-                                    btnCancel.setVisibility(View.GONE);
-                                });
-                                return true;
-                            case App.DELETE_STUDENT_INFO:
-                                alertDialog = new AlertDialog.Builder(getContext())
-                                        .setTitle("Delete Student Information")
-                                        .setMessage("Are you sure you want to delete this student information?")
-                                        .setPositiveButton("Yes", (dialogInterface, i) -> {
-                                            studentModel.deleteStudent(studentId, new StudentModel.OnDeleteStudentListener() {
-                                                @Override
-                                                public void onCompleted(boolean isDelete) {
-                                                    Log.d(TAG, "onCompleted: " + isDelete);
-                                                    if (isDelete) {
-                                                        replaceFragment(new ListStudentFragment());
-                                                    } else {
-                                                        Toast.makeText(getContext(), "Delete student failure", Toast.LENGTH_SHORT).show();
-                                                    }
+                            });
+                            btnCancel.setOnClickListener(v -> {
+                                setEnableEditText(false);
+                                btnUpdateStudent.setVisibility(View.GONE);
+                                btnCancel.setVisibility(View.GONE);
+                            });
+                            return true;
+                        } else if (menuItem.getItemId() == R.id.delete_student_detail) {
+                            alertDialog = new AlertDialog.Builder(getContext())
+                                    .setTitle("Delete Student Information")
+                                    .setMessage("Are you sure you want to delete this student information?")
+                                    .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                        studentModel.deleteStudent(studentId, new StudentModel.OnDeleteStudentListener() {
+                                            @Override
+                                            public void onCompleted(boolean isDelete) {
+                                                Log.d(TAG, "onCompleted: " + isDelete);
+                                                if (isDelete) {
+                                                    replaceFragment(new ListStudentFragment());
+                                                } else {
+                                                    Toast.makeText(getContext(), "Delete student failure", Toast.LENGTH_SHORT).show();
                                                 }
-                                            });
-                                        })
-                                        .setNegativeButton("No", (dialogInterface, i) -> {
-                                            Log.d(TAG, "onClick: cancel delete user");
-                                            alertDialog.dismiss();
-                                        })
-                                        .show();
-                                return true;
-                            case App.UPDATE_STUDENT_CERTIFICATE:
-                                AddCertificateOfStudentBottomSheetFragment addCertificateOfStudentBottomSheetFragment = new AddCertificateOfStudentBottomSheetFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("studentId", studentId);
-                                addCertificateOfStudentBottomSheetFragment.setArguments(bundle);
-                                addCertificateOfStudentBottomSheetFragment.show(getActivity().getSupportFragmentManager(), addCertificateOfStudentBottomSheetFragment.getTag());
-                                return true;
-                            default:
-                                return false;
+                                            }
+                                        });
+                                    })
+                                    .setNegativeButton("No", (dialogInterface, i) -> {
+                                        Log.d(TAG, "onClick: cancel delete user");
+                                        alertDialog.dismiss();
+                                    })
+                                    .show();
+                            return true;
+                        } else if (menuItem.getItemId() == R.id.add_new_certificate) {
+                            AddCertificateOfStudentBottomSheetFragment addCertificateOfStudentBottomSheetFragment = new AddCertificateOfStudentBottomSheetFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("studentId", studentId);
+                            addCertificateOfStudentBottomSheetFragment.setArguments(bundle);
+                            addCertificateOfStudentBottomSheetFragment.show(getActivity().getSupportFragmentManager(), addCertificateOfStudentBottomSheetFragment.getTag());
+                            return true;
                         }
+                        return false;
                     }
                 });
                 popupMenu.show();

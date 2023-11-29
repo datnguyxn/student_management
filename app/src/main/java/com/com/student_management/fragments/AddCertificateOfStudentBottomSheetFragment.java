@@ -116,7 +116,7 @@ public class AddCertificateOfStudentBottomSheetFragment extends BottomSheetDialo
             @Override
             public void onNotExist() {
                 Log.d(TAG, "onNotExist: ");
-                Toast.makeText(context, "Certificate is not exist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Certificate is not exist", Toast.LENGTH_SHORT).show();
             }
         });
     }

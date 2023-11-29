@@ -117,6 +117,9 @@ public class Certificate {
     public String toStringToCSV() {
         return id + "," + name + "," + description + "," + dateCreated + "," + dateUpdated;
     }
+    public String toStringToCSVForCertificate() {
+        return id + "," + name + "," + description + "," + dateCreated;
+    }
 
     @Override
     public String toString() {

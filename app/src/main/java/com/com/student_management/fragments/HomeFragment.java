@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -223,15 +224,14 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "onActivityResult: " + certificateArrayList.toString());
                 setDataForCertificate(certificateArrayList);
                 replaceFragment(new ListCertificateFragment());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
     private void setDataForCertificate(ArrayList<Certificate> certificateArrayList) {
-        for (Certificate certificate: certificateArrayList) {
+        for (Certificate certificate : certificateArrayList) {
             certificateModel.create(certificate.getName(), certificate.getDescription(), new CertificateModel.OnCreateCertificateListener() {
                 @Override
                 public void onCreateCertificateSuccess(Certificate certificate) {
@@ -267,7 +267,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCompleted(ArrayList<Student> students) {
                 try {
-                    File csvFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "students.csv");
+                    File csvFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "students.csv");
                     Log.d(TAG, "onCreate: " + csvFile);
                     FileWriter writer = new FileWriter(csvFile.getAbsoluteFile());
                     if (!csvFile.exists()) {
@@ -275,6 +275,8 @@ public class HomeFragment extends Fragment {
                     }
                     BufferedWriter bw = new BufferedWriter(writer);
                     try {
+                        bw.write("id,fullName,email,gender,birthday,phone,address,major,dateCreated,idCertificate");
+                        bw.newLine();
                         for (Student student : students) {
                             if (student.getIdCertificate().size() > 0) {
                                 Log.d(TAG, "onCompleted: " + student.getIdCertificate().toString().substring(1, student.getIdCertificate().toString().length() - 1).replaceAll("\\s+", ""));
@@ -288,9 +290,11 @@ public class HomeFragment extends Fragment {
                         }
                         bw.flush();
                         bw.close();
-                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/csv");
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+                        Uri fileUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", csvFile);
+                        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(Intent.createChooser(intent, "Share CSV"));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -307,7 +311,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onGetAllCertificatesSuccess(ArrayList<Certificate> certificates) {
                 try {
-                    File csvFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "certificates.csv");
+                    File csvFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "certificates.csv");
                     Log.d(TAG, "onCreate: " + csvFile);
                     FileWriter writer = new FileWriter(csvFile.getAbsoluteFile());
                     if (!csvFile.exists()) {
@@ -315,16 +319,26 @@ public class HomeFragment extends Fragment {
                     }
                     BufferedWriter bw = new BufferedWriter(writer);
                     try {
+                        bw.write("id,name,description,dateCreated,dateUpdated");
+                        bw.newLine();
                         for (Certificate certificate : certificates) {
-                            Log.d(TAG, "onCompleted: " + certificate.toStringToCSV());
-                            bw.write(certificate.toStringToCSV());
-                            bw.newLine();
+                            if (certificate.getDateUpdated().isEmpty()) {
+                                Log.d(TAG, "onCompleted: " + certificate.toStringToCSVForCertificate());
+                                bw.write(certificate.toStringToCSVForCertificate());
+                                bw.newLine();
+                            } else {
+                                Log.d(TAG, "onCompleted: " + certificate.toStringToCSV());
+                                bw.write(certificate.toStringToCSV());
+                                bw.newLine();
+                            }
                         }
                         bw.flush();
                         bw.close();
-                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/csv");
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+                        Uri fileUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", csvFile);
+                        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(Intent.createChooser(intent, "Share CSV"));
                     } catch (Exception e) {
                         e.printStackTrace();

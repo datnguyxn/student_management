@@ -80,7 +80,7 @@ public class CertificateOfStudentAdapter extends RecyclerView.Adapter<Certificat
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             Log.d("TAG", "onMenuItemClick: " + menuItem.getItemId());
-                            if (menuItem.getItemId() == App.DELETE_CERTIFICATE_OF_STUDENT) {
+                            if (menuItem.getItemId() == R.id.delete_certificate_of_student) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setMessage("Do you want to delete this certificate?");
                                 builder.setPositiveButton("Yes", (dialogInterface, i) -> {

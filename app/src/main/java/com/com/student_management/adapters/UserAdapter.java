@@ -180,10 +180,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                                     .show();
                             return true;
                         }
-                        popup.show();
                         return false;
                     }
                 });
+                popup.show();
             }
         });
     }
